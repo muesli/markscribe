@@ -37,7 +37,7 @@ var recentReposQuery struct {
 					Description   githubv4.String
 				}
 			}
-		} `graphql:"repositories(first: $count, isFork: false, ownerAffiliations: OWNER, orderBy: {field: CREATED_AT, direction: DESC})"`
+		} `graphql:"repositories(first: $count, privacy: PUBLIC, isFork: false, ownerAffiliations: OWNER, orderBy: {field: CREATED_AT, direction: DESC})"`
 	} `graphql:"user(login:$username)"`
 }
 
@@ -228,7 +228,7 @@ func recentReleases(count int) []Repo {
 {
   user(login: "muesli") {
     login
-    repositories(first: 10, isFork: false, ownerAffiliations: OWNER, orderBy: {field: CREATED_AT, direction: DESC}) {
+    repositories(first: 10, privacy: PUBLIC, isFork: false, ownerAffiliations: OWNER, orderBy: {field: CREATED_AT, direction: DESC}) {
       totalCount
       edges {
         cursor
