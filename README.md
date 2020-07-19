@@ -27,3 +27,8 @@ Rendered it looks a little like my own profile page: https://github.com/muesli
 
 markscribe uses Go's powerful template engine. You can find its documentation
 here: https://golang.org/pkg/text/template/
+
+## FAQ
+
+Q: "That's awesome, but can you expose more APIs and data?"
+A: Of course, just let me know what you'd like to do with markscribe and open a new issue!
