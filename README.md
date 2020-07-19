@@ -1,5 +1,10 @@
 # markscribe
 
+[![Build Status](https://travis-ci.org/muesli/markscribe.svg?branch=master)](https://travis-ci.org/muesli/markscribe)
+[![GoDoc](https://godoc.org/github.com/golang/gddo?status.svg)](https://godoc.org/github.com/muesli/markscribe)
+[![Coverage Status](https://coveralls.io/repos/github/muesli/markscribe/badge.svg?branch=master)](https://coveralls.io/github/muesli/markscribe?branch=master)
+[![Go ReportCard](http://goreportcard.com/badge/muesli/markscribe)](http://goreportcard.com/report/muesli/markscribe)
+
 Your personal markdown scribe with template-engine and Git(Hub) & RSS powers 📜
 
 In order to access GitHub's API, markscribe expects you to provide a valid
