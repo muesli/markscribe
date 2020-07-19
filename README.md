@@ -30,5 +30,5 @@ here: https://golang.org/pkg/text/template/
 
 ## FAQ
 
-Q: "That's awesome, but can you expose more APIs and data?"
+Q: "That's awesome, but can you expose more APIs and data?"  
 A: Of course, just let me know what you'd like to do with markscribe and open a new issue!
