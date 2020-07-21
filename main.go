@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"net/http"
 	"os"
 
 	"github.com/shurcooL/githubv4"
@@ -45,15 +46,22 @@ func main() {
 		os.Exit(1)
 	}
 
-	src := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: os.Getenv("GITHUB_TOKEN")},
-	)
-	httpClient := oauth2.NewClient(context.Background(), src)
+	var httpClient *http.Client
+	token := os.Getenv("GITHUB_TOKEN")
+	if len(token) > 0 {
+		httpClient = oauth2.NewClient(context.Background(), oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: token},
+		))
+	}
+
 	client = githubv4.NewClient(httpClient)
-	username, err = getUsername()
-	if err != nil {
-		fmt.Println("Can't retrieve profile:", err)
-		os.Exit(1)
+
+	if len(token) > 0 {
+		username, err = getUsername()
+		if err != nil {
+			fmt.Println("Can't retrieve GitHub profile:", err)
+			os.Exit(1)
+		}
 	}
 
 	w := os.Stdout
