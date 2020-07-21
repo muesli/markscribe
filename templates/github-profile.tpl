@@ -12,7 +12,7 @@ Want your own awesome profile page? Check out [markscribe](https://github.com/mu
 - [{{.Name}}]({{.URL}}) ([{{.LastRelease.TagName}}]({{.LastRelease.URL}}), {{humanize .LastRelease.PublishedAt}}) - {{.Description}}
 {{- end}}
 
-#### ⚡ My recent blog posts
+#### 📜 My recent blog posts
 {{range rss "https://.../posts/index.xml" 5}}
 - [{{.Title}}]({{.URL}}) ({{humanize .PublishedAt}})
 {{- end}}
