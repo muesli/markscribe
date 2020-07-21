@@ -64,7 +64,7 @@ var recentReleasesQuery struct {
 							IsPrerelease githubv4.Boolean
 							IsDraft      githubv4.Boolean
 						}
-					} `graphql:"releases(first: 1, orderBy: {field: CREATED_AT, direction: DESC})"`
+					} `graphql:"releases(first: 10, orderBy: {field: CREATED_AT, direction: DESC})"`
 				}
 			}
 		} `graphql:"repositoriesContributedTo(first: 100, after:$after includeUserRepositories: true, contributionTypes: COMMIT, privacy: PUBLIC)"`
@@ -152,7 +152,10 @@ func recentReleases(count int) []Repo {
 				break
 			}
 
-			sm[string(v.Node.NameWithOwner)] = r
+			if !r.LastRelease.PublishedAt.IsZero() {
+				sm[string(v.Node.NameWithOwner)] = r
+			}
+
 			after = &v.Cursor
 		}
 	}
