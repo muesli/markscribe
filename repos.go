@@ -139,6 +139,10 @@ func recentReleases(count int) []Repo {
 				if rel.IsPrerelease || rel.IsDraft {
 					continue
 				}
+				if v.Node.Releases.Nodes[0].TagName == "" ||
+					v.Node.Releases.Nodes[0].PublishedAt.Time.IsZero() {
+					continue
+				}
 				r.LastRelease = Release{
 					Name:        string(v.Node.Releases.Nodes[0].Name),
 					TagName:     string(v.Node.Releases.Nodes[0].TagName),
