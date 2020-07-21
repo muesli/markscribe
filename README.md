@@ -6,18 +6,15 @@
 
 Your personal markdown scribe with template-engine and Git(Hub) & RSS powers 📜
 
-In order to access GitHub's API, markscribe expects you to provide a valid
-GitHub token as an environment variable called `GITHUB_TOKEN`.
-
 ## Usage
 
 Render a template to stdout:
 
-    markscribe file.tpl
+    markscribe template.tpl
 
 Render to a file:
 
-    markscribe -write /tmp/output.md file.tpl
+    markscribe -write /tmp/output.md template.tpl
 
 ## Templates
 
@@ -28,6 +25,16 @@ like the RSS-feed or social media URLs.
 Rendered it looks a little like my own profile page: https://github.com/muesli
 
 ## Functions
+
+### Retrieve RSS feed
+
+```
+{{range rss "https://domain.tld/feed.xml" 5}}
+Title: {{.Title}}
+URL: {{.URL}}
+Published: {{humanize .PublishedAt}}
+{{end}}
+```
 
 ### Fetch repositories you recently created
 
@@ -40,6 +47,8 @@ Stars: {{.Stargazers}}
 {{end}}
 ```
 
+This function requires GitHub authentication!
+
 ### Fetch recent releases you contributed to
 
 ```
@@ -51,6 +60,8 @@ Published: {{humanize .LastRelease.PublishedAt}}
 {{end}}
 ```
 
+This function requires GitHub authentication!
+
 ### Fetch your latest followers
 
 ```
@@ -60,20 +71,20 @@ URL: {{.URL}}
 {{end}}
 ```
 
-### Retrieve RSS feed
-
-```
-{{range rss "https://.../feed.xml" 5}}
-Title: {{.Title}}
-URL: {{.URL}}
-Published: {{humanize .PublishedAt}}
-{{end}}
-```
+This function requires GitHub authentication!
 
 ## Template Engine
 
 markscribe uses Go's powerful template engine. You can find its documentation
 here: https://golang.org/pkg/text/template/
+
+## GitHub Authentication
+
+In order to access some of GitHub's API, markscribe requires you to provide a
+valid GitHub token in an environment variable called `GITHUB_TOKEN`. You can
+create a new token by going to your profile settings:
+
+`Developer settings` > `Personal access tokens` > `Generate new token`.
 
 ## FAQ
 
