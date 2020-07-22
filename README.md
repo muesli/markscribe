@@ -6,6 +6,8 @@
 
 Your personal markdown scribe with template-engine and Git(Hub) & RSS powers 📜
 
+You can run markscribe as a GitHub Action: [readme-scribe](https://github.com/muesli/readme-scribe/)
+
 ## Usage
 
 Render a template to stdout:
