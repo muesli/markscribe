@@ -1,7 +1,5 @@
 ### Hi there 👋
 
-Want your own awesome profile page? Check out [readme-scribe](https://github.com/muesli/readme-scribe)!
-
 #### 🌱 Check out what I'm currently working on
 {{range recentRepos 10}}
 - [{{.Name}}]({{.URL}}) - {{.Description}}
@@ -36,3 +34,5 @@ Say Hello, I don't bite!
 - Twitter: https://twitter.com/...
 - Fediverse: https://mastodon.social/@...
 - Blog: https://...
+
+Want your own self-generating profile page? Check out [readme-scribe](https://github.com/muesli/readme-scribe)!
