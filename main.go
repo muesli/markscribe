@@ -38,6 +38,7 @@ func main() {
 		"recentRepos":    recentRepos,
 		"recentReleases": recentReleases,
 		"followers":      recentFollowers,
+		"gists":          gists,
 		"rss":            rssFeed,
 		"humanize":       humanized,
 	}).Parse(string(tplIn))

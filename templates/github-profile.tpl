@@ -17,6 +17,11 @@ Want your own awesome profile page? Check out [readme-scribe](https://github.com
 - [{{.Title}}]({{.URL}}) ({{humanize .PublishedAt}})
 {{- end}}
 
+#### 📓 Gists I wrote
+{{range gists 5}}
+- [{{.Description}}]({{.URL}}) ({{humanize .CreatedAt}})
+{{- end}}
+
 #### 👯 Check out some of my recent followers
 {{range followers 5}}
 - [{{.Login}}]({{.URL}})
