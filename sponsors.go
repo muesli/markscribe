@@ -2,9 +2,15 @@ package main
 
 import (
 	"context"
+	"time"
 
 	"github.com/shurcooL/githubv4"
 )
+
+type Sponsor struct {
+	User      User
+	CreatedAt time.Time
+}
 
 var sponsorsQuery struct {
 	User struct {
@@ -25,14 +31,14 @@ var sponsorsQuery struct {
 					}
 				}
 			}
-		} `graphql:"sponsorshipsAsMaintainer(first: $count)"`
+		} `graphql:"sponsorshipsAsMaintainer(first: $count, orderBy: {field: CREATED_AT, direction: DESC})"`
 	} `graphql:"user(login:$username)"`
 }
 
-func sponsors(count int) []User {
+func sponsors(count int) []Sponsor {
 	// fmt.Printf("Finding sponsors...\n")
 
-	var users []User
+	var sponsors []Sponsor
 	variables := map[string]interface{}{
 		"username": githubv4.String(username),
 		"count":    githubv4.Int(count),
@@ -45,17 +51,20 @@ func sponsors(count int) []User {
 	// fmt.Printf("%+v\n", query)
 
 	for _, v := range sponsorsQuery.User.SponsorshipsAsMaintainer.Edges {
-		u := User{
-			Login:     string(v.Node.SponsorEntity.SponsorUser.Login),
-			Name:      string(v.Node.SponsorEntity.SponsorUser.Name),
-			AvatarURL: string(v.Node.SponsorEntity.SponsorUser.AvatarURL),
-			URL:       string(v.Node.SponsorEntity.SponsorUser.URL),
+		s := Sponsor{
+			User: User{
+				Login:     string(v.Node.SponsorEntity.SponsorUser.Login),
+				Name:      string(v.Node.SponsorEntity.SponsorUser.Name),
+				AvatarURL: string(v.Node.SponsorEntity.SponsorUser.AvatarURL),
+				URL:       string(v.Node.SponsorEntity.SponsorUser.URL),
+			},
+			CreatedAt: v.Node.CreatedAt.Time,
 		}
-		users = append(users, u)
+		sponsors = append(sponsors, s)
 	}
 
 	// fmt.Printf("Found %d sponsors!\n", len(users))
-	return users
+	return sponsors
 }
 
 /*

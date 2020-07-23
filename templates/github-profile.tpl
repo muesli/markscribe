@@ -22,7 +22,7 @@
 
 #### ❤️ These awesome people sponsor me (thank you!)
 {{range sponsors 5}}
-- [{{.Login}}]({{.URL}})
+- [{{.User.Login}}]({{.User.URL}}) ({{humanize .CreatedAt}})
 {{- end}}
 
 #### 👯 Check out some of my recent followers

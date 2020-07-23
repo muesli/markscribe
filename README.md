@@ -82,6 +82,8 @@ This function requires GitHub authentication!
 ```
 {{range followers 5}}
 Username: {{.Login}}
+Name: {{.Name}}
+Avatar: {{.AvatarURL}}
 URL: {{.URL}}
 {{end}}
 ```
@@ -92,8 +94,11 @@ This function requires GitHub authentication!
 
 ```
 {{range sponsors 5}}
-Username: {{.Login}}
-URL: {{.URL}}
+Username: {{.User.Login}}
+Name: {{.User.Name}}
+Avatar: {{.User.AvatarURL}}
+URL: {{.User.URL}}
+Created: {{humanize .CreatedAt}}
 {{end}}
 ```
 
