@@ -28,7 +28,7 @@ Rendered it looks a little like my own profile page: https://github.com/muesli
 
 ## Functions
 
-### Retrieve RSS feed
+### RSS feed
 
 ```
 {{range rss "https://domain.tld/feed.xml" 5}}
@@ -38,7 +38,7 @@ Published: {{humanize .PublishedAt}}
 {{end}}
 ```
 
-### Fetch repositories you recently created
+### Repositories you recently created
 
 ```
 {{range recentRepos 10}}
@@ -51,7 +51,7 @@ Stars: {{.Stargazers}}
 
 This function requires GitHub authentication!
 
-### Fetch recent releases you contributed to
+### Recent releases you contributed to
 
 ```
 {{range recentReleases 10}}
@@ -64,7 +64,7 @@ Published: {{humanize .LastRelease.PublishedAt}}
 
 This function requires GitHub authentication!
 
-### Fetch published gists
+### Your published gists
 
 ```
 {{range gists 10}}
@@ -77,10 +77,21 @@ Created: {{humanize .CreatedAt}}
 
 This function requires GitHub authentication!
 
-### Fetch your latest followers
+### Your latest followers
 
 ```
 {{range followers 5}}
+Username: {{.Login}}
+URL: {{.URL}}
+{{end}}
+```
+
+This function requires GitHub authentication!
+
+### Your sponsors
+
+```
+{{range sponsors 5}}
 Username: {{.Login}}
 URL: {{.URL}}
 {{end}}
@@ -99,7 +110,7 @@ In order to access some of GitHub's API, markscribe requires you to provide a
 valid GitHub token in an environment variable called `GITHUB_TOKEN`. You can
 create a new token by going to your profile settings:
 
-`Developer settings` > `Personal access tokens` > `Generate new token`.
+`Developer settings` > `Personal access tokens` > `Generate new token`
 
 ## FAQ
 

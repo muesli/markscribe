@@ -20,6 +20,11 @@
 - [{{.Description}}]({{.URL}}) ({{humanize .CreatedAt}})
 {{- end}}
 
+#### ❤️ These awesome people sponsor me (thank you!)
+{{range sponsors 5}}
+- [{{.Login}}]({{.URL}})
+{{- end}}
+
 #### 👯 Check out some of my recent followers
 {{range followers 5}}
 - [{{.Login}}]({{.URL}})

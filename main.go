@@ -35,12 +35,16 @@ func main() {
 	}
 
 	tpl, err := template.New("tpl").Funcs(template.FuncMap{
+		/* GitHub */
 		"recentRepos":    recentRepos,
 		"recentReleases": recentReleases,
 		"followers":      recentFollowers,
 		"gists":          gists,
-		"rss":            rssFeed,
-		"humanize":       humanized,
+		"sponsors":       sponsors,
+		/* RSS */
+		"rss": rssFeed,
+		/* Utils */
+		"humanize": humanized,
 	}).Parse(string(tplIn))
 	if err != nil {
 		fmt.Println("Can't parse template:", err)
