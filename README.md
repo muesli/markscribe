@@ -64,6 +64,19 @@ Published: {{humanize .LastRelease.PublishedAt}}
 
 This function requires GitHub authentication!
 
+### Fetch published gists
+
+```
+{{range gists 10}}
+Name: {{.Name}}
+Description: {{.Description}}
+URL: {{.URL}}
+Created: {{humanize .CreatedAt}}
+{{end}}
+```
+
+This function requires GitHub authentication!
+
 ### Fetch your latest followers
 
 ```
