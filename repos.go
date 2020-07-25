@@ -48,7 +48,7 @@ var recentContributionsQuery struct {
 					Description   githubv4.String
 					IsPrivate     githubv4.Boolean
 				}
-			}
+			} `graphql:"commitContributionsByRepository(maxRepositories: 100)"`
 		}
 	} `graphql:"user(login:$username)"`
 }
