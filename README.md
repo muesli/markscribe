@@ -38,6 +38,19 @@ Published: {{humanize .PublishedAt}}
 {{end}}
 ```
 
+### Your recent contributions
+
+```
+{{range recentContributions 10}}
+Name: {{.Repo.Name}}
+Description: {{.Repo.Description}}
+URL: {{.Repo.URL}})
+Occurred: {{humanize .OccurredAt}}
+{{end}}
+```
+
+This function requires GitHub authentication!
+
 ### Repositories you recently created
 
 ```

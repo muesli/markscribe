@@ -24,6 +24,35 @@ type Release struct {
 	URL         string
 }
 
+type Contribution struct {
+	OccurredAt time.Time
+	Repo       Repo
+}
+
+var recentContributionsQuery struct {
+	User struct {
+		Login                   githubv4.String
+		ContributionsCollection struct {
+			CommitContributionsByRepository []struct {
+				Contributions struct {
+					Edges []struct {
+						Cursor githubv4.String
+						Node   struct {
+							OccurredAt githubv4.DateTime
+						}
+					}
+				} `graphql:"contributions(first: 1)"`
+				Repository struct {
+					NameWithOwner githubv4.String
+					URL           githubv4.String
+					Description   githubv4.String
+					IsPrivate     githubv4.Boolean
+				}
+			}
+		}
+	} `graphql:"user(login:$username)"`
+}
+
 var recentReposQuery struct {
 	User struct {
 		Login        githubv4.String
@@ -69,6 +98,50 @@ var recentReleasesQuery struct {
 			}
 		} `graphql:"repositoriesContributedTo(first: 100, after:$after includeUserRepositories: true, contributionTypes: COMMIT, privacy: PUBLIC)"`
 	} `graphql:"user(login:$username)"`
+}
+
+func recentContributions(count int) []Contribution {
+	// fmt.Printf("Finding recent contributions...\n")
+
+	var contributions []Contribution
+	variables := map[string]interface{}{
+		"username": githubv4.String(username),
+	}
+	err := client.Query(context.Background(), &recentContributionsQuery, variables)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, v := range recentContributionsQuery.User.ContributionsCollection.CommitContributionsByRepository {
+		// ignore meta-repo
+		if string(v.Repository.NameWithOwner) == fmt.Sprintf("%s/%s", username, username) {
+			continue
+		}
+		if v.Repository.IsPrivate {
+			continue
+		}
+
+		c := Contribution{
+			Repo: Repo{
+				Name:        string(v.Repository.NameWithOwner),
+				URL:         string(v.Repository.URL),
+				Description: string(v.Repository.Description),
+			},
+			OccurredAt: v.Contributions.Edges[0].Node.OccurredAt.Time,
+		}
+
+		contributions = append(contributions, c)
+	}
+
+	sort.Slice(contributions, func(i, j int) bool {
+		return contributions[i].OccurredAt.After(contributions[j].OccurredAt)
+	})
+
+	// fmt.Printf("Found %d contributions!\n", len(repos))
+	if len(contributions) > count {
+		return contributions[:count]
+	}
+	return contributions
 }
 
 func recentRepos(count int) []Repo {
@@ -226,6 +299,30 @@ func recentReleases(count int) []Repo {
         node {
           id
           nameWithOwner
+        }
+      }
+    }
+  }
+}
+
+{
+  user(login: "muesli") {
+    login
+    contributionsCollection {
+      commitContributionsByRepository {
+        contributions(first: 1) {
+          edges {
+            cursor
+            node {
+              occurredAt
+            }
+          }
+        }
+        repository {
+          id
+		  nameWithOwner
+		  url
+		  description
         }
       }
     }
