@@ -2,17 +2,9 @@ package main
 
 import (
 	"context"
-	"time"
 
 	"github.com/shurcooL/githubv4"
 )
-
-type Gist struct {
-	Name        string
-	Description string
-	URL         string
-	CreatedAt   time.Time
-}
 
 var gistsQuery struct {
 	User struct {
@@ -21,12 +13,7 @@ var gistsQuery struct {
 			TotalCount githubv4.Int
 			Edges      []struct {
 				Cursor githubv4.String
-				Node   struct {
-					Name        githubv4.String
-					Description githubv4.String
-					URL         githubv4.String
-					CreatedAt   githubv4.DateTime
-				}
+				Node   QLGist
 			}
 		} `graphql:"gists(first: $count, orderBy: {field: CREATED_AT, direction: DESC})"`
 	} `graphql:"user(login:$username)"`
@@ -47,13 +34,7 @@ func gists(count int) []Gist {
 
 	// fmt.Printf("%+v\n", query)
 	for _, v := range gistsQuery.User.Gists.Edges {
-		g := Gist{
-			Name:        string(v.Node.Name),
-			Description: string(v.Node.Description),
-			URL:         string(v.Node.URL),
-			CreatedAt:   v.Node.CreatedAt.Time,
-		}
-		gists = append(gists, g)
+		gists = append(gists, GistFromQL(v.Node))
 	}
 
 	// fmt.Printf("Found %d gists!\n", len(gists))

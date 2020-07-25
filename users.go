@@ -6,13 +6,6 @@ import (
 	"github.com/shurcooL/githubv4"
 )
 
-type User struct {
-	Login     string
-	Name      string
-	AvatarURL string
-	URL       string
-}
-
 var viewerQuery struct {
 	Viewer struct {
 		Login githubv4.String
@@ -26,12 +19,7 @@ var recentFollowersQuery struct {
 			TotalCount githubv4.Int
 			Edges      []struct {
 				Cursor githubv4.String
-				Node   struct {
-					Login     githubv4.String
-					Name      githubv4.String
-					AvatarURL githubv4.String
-					URL       githubv4.String
-				}
+				Node   QLUser
 			}
 		} `graphql:"followers(first: $count)"`
 	} `graphql:"user(login:$username)"`
@@ -61,13 +49,7 @@ func recentFollowers(count int) []User {
 
 	// fmt.Printf("%+v\n", query)
 	for _, v := range recentFollowersQuery.User.Followers.Edges {
-		u := User{
-			Login:     string(v.Node.Login),
-			Name:      string(v.Node.Name),
-			AvatarURL: string(v.Node.AvatarURL),
-			URL:       string(v.Node.URL),
-		}
-		users = append(users, u)
+		users = append(users, UserFromQL(v.Node))
 	}
 
 	// fmt.Printf("Found %d recent followers!\n", len(users))

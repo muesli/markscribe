@@ -2,15 +2,9 @@ package main
 
 import (
 	"context"
-	"time"
 
 	"github.com/shurcooL/githubv4"
 )
-
-type Sponsor struct {
-	User      User
-	CreatedAt time.Time
-}
 
 var sponsorsQuery struct {
 	User struct {
@@ -22,12 +16,7 @@ var sponsorsQuery struct {
 				Node   struct {
 					CreatedAt     githubv4.DateTime
 					SponsorEntity struct {
-						SponsorUser struct {
-							Login     githubv4.String
-							Name      githubv4.String
-							AvatarURL githubv4.String
-							URL       githubv4.String
-						} `graphql:"... on User"`
+						SponsorUser QLUser `graphql:"... on User"`
 					}
 				}
 			}
@@ -52,12 +41,7 @@ func sponsors(count int) []Sponsor {
 
 	for _, v := range sponsorsQuery.User.SponsorshipsAsMaintainer.Edges {
 		s := Sponsor{
-			User: User{
-				Login:     string(v.Node.SponsorEntity.SponsorUser.Login),
-				Name:      string(v.Node.SponsorEntity.SponsorUser.Name),
-				AvatarURL: string(v.Node.SponsorEntity.SponsorUser.AvatarURL),
-				URL:       string(v.Node.SponsorEntity.SponsorUser.URL),
-			},
+			User:      UserFromQL(v.Node.SponsorEntity.SponsorUser),
 			CreatedAt: v.Node.CreatedAt.Time,
 		}
 		sponsors = append(sponsors, s)

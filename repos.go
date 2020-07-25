@@ -4,30 +4,9 @@ import (
 	"context"
 	"fmt"
 	"sort"
-	"time"
 
 	"github.com/shurcooL/githubv4"
 )
-
-type Repo struct {
-	Name        string
-	URL         string
-	Description string
-	Stargazers  int
-	LastRelease Release
-}
-
-type Release struct {
-	Name        string
-	TagName     string
-	PublishedAt time.Time
-	URL         string
-}
-
-type Contribution struct {
-	OccurredAt time.Time
-	Repo       Repo
-}
 
 var recentContributionsQuery struct {
 	User struct {
@@ -42,12 +21,7 @@ var recentContributionsQuery struct {
 						}
 					}
 				} `graphql:"contributions(first: 1)"`
-				Repository struct {
-					NameWithOwner githubv4.String
-					URL           githubv4.String
-					Description   githubv4.String
-					IsPrivate     githubv4.Boolean
-				}
+				Repository QLRepository
 			} `graphql:"commitContributionsByRepository(maxRepositories: 100)"`
 		}
 	} `graphql:"user(login:$username)"`
@@ -60,11 +34,7 @@ var recentReposQuery struct {
 			TotalCount githubv4.Int
 			Edges      []struct {
 				Cursor githubv4.String
-				Node   struct {
-					NameWithOwner githubv4.String
-					URL           githubv4.String
-					Description   githubv4.String
-				}
+				Node   QLRepository
 			}
 		} `graphql:"repositories(first: $count, privacy: PUBLIC, isFork: false, ownerAffiliations: OWNER, orderBy: {field: CREATED_AT, direction: DESC})"`
 	} `graphql:"user(login:$username)"`
@@ -78,22 +48,8 @@ var recentReleasesQuery struct {
 			Edges      []struct {
 				Cursor githubv4.String
 				Node   struct {
-					NameWithOwner githubv4.String
-					URL           githubv4.String
-					Description   githubv4.String
-					Stargazers    struct {
-						TotalCount githubv4.Int
-					}
-					Releases struct {
-						Nodes []struct {
-							Name         githubv4.String
-							TagName      githubv4.String
-							PublishedAt  githubv4.DateTime
-							URL          githubv4.String
-							IsPrerelease githubv4.Boolean
-							IsDraft      githubv4.Boolean
-						}
-					} `graphql:"releases(first: 10, orderBy: {field: CREATED_AT, direction: DESC})"`
+					QLRepository
+					Releases QLRelease `graphql:"releases(first: 10, orderBy: {field: CREATED_AT, direction: DESC})"`
 				}
 			}
 		} `graphql:"repositoriesContributedTo(first: 100, after:$after includeUserRepositories: true, contributionTypes: COMMIT, privacy: PUBLIC)"`
@@ -122,11 +78,7 @@ func recentContributions(count int) []Contribution {
 		}
 
 		c := Contribution{
-			Repo: Repo{
-				Name:        string(v.Repository.NameWithOwner),
-				URL:         string(v.Repository.URL),
-				Description: string(v.Repository.Description),
-			},
+			Repo:       RepoFromQL(v.Repository),
 			OccurredAt: v.Contributions.Edges[0].Node.OccurredAt.Time,
 		}
 
@@ -163,13 +115,7 @@ func recentRepos(count int) []Repo {
 			continue
 		}
 
-		r := Repo{
-			Name:        string(v.Node.NameWithOwner),
-			URL:         string(v.Node.URL),
-			Description: string(v.Node.Description),
-		}
-
-		repos = append(repos, r)
+		repos = append(repos, RepoFromQL(v.Node))
 		if len(repos) == count {
 			break
 		}
@@ -201,12 +147,7 @@ func recentReleases(count int) []Repo {
 		}
 
 		for _, v := range recentReleasesQuery.User.RepositoriesContributedTo.Edges {
-			r := Repo{
-				Name:        string(v.Node.NameWithOwner),
-				URL:         string(v.Node.URL),
-				Description: string(v.Node.Description),
-				Stargazers:  int(v.Node.Stargazers.TotalCount),
-			}
+			r := RepoFromQL(v.Node.QLRepository)
 
 			for _, rel := range v.Node.Releases.Nodes {
 				if rel.IsPrerelease || rel.IsDraft {
@@ -216,12 +157,7 @@ func recentReleases(count int) []Repo {
 					v.Node.Releases.Nodes[0].PublishedAt.Time.IsZero() {
 					continue
 				}
-				r.LastRelease = Release{
-					Name:        string(v.Node.Releases.Nodes[0].Name),
-					TagName:     string(v.Node.Releases.Nodes[0].TagName),
-					PublishedAt: v.Node.Releases.Nodes[0].PublishedAt.Time,
-					URL:         string(v.Node.Releases.Nodes[0].URL),
-				}
+				r.LastRelease = ReleaseFromQL(v.Node.Releases)
 				break
 			}
 
