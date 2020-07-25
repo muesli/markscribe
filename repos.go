@@ -110,7 +110,7 @@ func recentReleases(count int) []Repo {
 	// fmt.Printf("Finding recent releases...\n")
 
 	var after *githubv4.String
-	sm := make(map[string]Repo)
+	var repos []Repo
 
 	for {
 		variables := map[string]interface{}{
@@ -153,40 +153,24 @@ func recentReleases(count int) []Repo {
 			}
 
 			if !r.LastRelease.PublishedAt.IsZero() {
-				sm[string(v.Node.NameWithOwner)] = r
+				repos = append(repos, r)
 			}
 
 			after = &v.Cursor
 		}
 	}
 
-	// sort repos
-	type kv struct {
-		URL  string
-		Repo Repo
-	}
-
-	var sl []kv
-	for k, v := range sm {
-		sl = append(sl, kv{k, v})
-	}
-
-	sort.Slice(sl, func(i, j int) bool {
-		if sl[i].Repo.LastRelease.PublishedAt.Equal(sl[j].Repo.LastRelease.PublishedAt) {
-			return sl[i].Repo.Stargazers > sl[j].Repo.Stargazers
+	sort.Slice(repos, func(i, j int) bool {
+		if repos[i].LastRelease.PublishedAt.Equal(repos[j].LastRelease.PublishedAt) {
+			return repos[i].Stargazers > repos[j].Stargazers
 		}
-		return sl[i].Repo.LastRelease.PublishedAt.After(sl[j].Repo.LastRelease.PublishedAt)
+		return repos[i].LastRelease.PublishedAt.After(repos[j].LastRelease.PublishedAt)
 	})
 
-	var repos []Repo
-	for i, kv := range sl {
-		repos = append(repos, kv.Repo)
-		if i == count-1 {
-			break
-		}
-	}
-
 	// fmt.Printf("Found %d repos!\n", len(repos))
+	if len(repos) > count {
+		return repos[:count]
+	}
 	return repos
 }
 
