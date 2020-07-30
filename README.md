@@ -43,7 +43,7 @@ To install markscribe, simply run:
 ## Templates
 
 You can find an example template to generate a GitHub profile README under
-`templates/github-profile.tpl`. Make sure to fill in (or remove) placeholders,
+[`templates/github-profile.tpl`](templates/github-profile.tpl). Make sure to fill in (or remove) placeholders,
 like the RSS-feed or social media URLs.
 
 Rendered it looks a little like my own profile page: https://github.com/muesli
