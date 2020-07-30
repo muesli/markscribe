@@ -6,6 +6,7 @@ before:
 builds:
   -
     id: "markscribe"
+    main: ./cmd/main.go
     binary: markscribe
     ldflags: -s -w -X main.Version={{ .Version }} -X main.CommitSHA={{ .Commit }}
     goos:
