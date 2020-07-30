@@ -1,11 +1,10 @@
-package main
+package internal
 
 import (
 	"context"
 	"flag"
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -20,20 +19,7 @@ var (
 	write = flag.String("write", "", "write output to")
 )
 
-func main() {
-	flag.Parse()
-
-	if len(flag.Args()) == 0 {
-		fmt.Println("Usage: markscribe [template]")
-		os.Exit(1)
-	}
-
-	tplIn, err := ioutil.ReadFile(flag.Args()[0])
-	if err != nil {
-		fmt.Println("Can't read file:", err)
-		os.Exit(1)
-	}
-
+func New(tplIn []byte) error {
 	tpl, err := template.New("tpl").Funcs(template.FuncMap{
 		/* GitHub */
 		"recentContributions": recentContributions,
@@ -47,9 +33,9 @@ func main() {
 		/* Utils */
 		"humanize": humanized,
 	}).Parse(string(tplIn))
+
 	if err != nil {
-		fmt.Println("Can't parse template:", err)
-		os.Exit(1)
+		return fmt.Errorf("Can't parse template: %s", err)
 	}
 
 	var httpClient *http.Client
@@ -65,8 +51,7 @@ func main() {
 	if len(token) > 0 {
 		username, err = getUsername()
 		if err != nil {
-			fmt.Println("Can't retrieve GitHub profile:", err)
-			os.Exit(1)
+			return fmt.Errorf("Can't retrieve GitHub profile: %s", err)
 		}
 	}
 
@@ -74,8 +59,7 @@ func main() {
 	if len(*write) > 0 {
 		f, err := os.Create(*write)
 		if err != nil {
-			fmt.Println("Can't create:", err)
-			os.Exit(1)
+			return fmt.Errorf("Can't create: %s", err)
 		}
 		defer f.Close()
 		w = f
@@ -83,7 +67,8 @@ func main() {
 
 	err = tpl.Execute(w, nil)
 	if err != nil {
-		fmt.Println("Can't render template:", err)
-		os.Exit(1)
+		return fmt.Errorf("Can't render template: %s", err)
 	}
+
+	return nil
 }
