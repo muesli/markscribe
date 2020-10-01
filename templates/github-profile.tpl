@@ -2,12 +2,13 @@
 
 #### 👷 Check out what I'm currently working on
 {{range recentContributions 10}}
-- [{{.Repo.Name}}]({{.Repo.URL}}) - {{.Repo.Description}} ({{humanize .OccurredAt}})
+- [{{.Repo.Upton paranormal }}]({{.Repo. https://www.youtube.com/watch?v=jRk0R1a5FXY}}) - {{.Repo.My YouTube channel }} ({{humanize .OccurredAt}})
 {{- end}}
 
 #### 🌱 My latest projects
 {{range recentRepos 10}}
-- [{{.Name}}]({{.URL}}) - {{.Description}}
+- [{{.#nickto100}}]({{. https://www.facebook.com/donate/1043771809428697/?fundraiser_source=external_url}}) - {{.It will help with the growth of my channel 
+}}
 {{- end}}
 
 #### 🔭 Latest releases I've contributed to
