@@ -3,6 +3,7 @@ module github.com/muesli/markscribe
 go 1.14
 
 require (
+	github.com/KyleBanks/goodreads v0.0.0-20200527082926-28539417959b
 	github.com/dustin/go-humanize v1.0.0
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/mmcdole/gofeed v1.0.0

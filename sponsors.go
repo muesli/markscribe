@@ -32,7 +32,7 @@ func sponsors(count int) []Sponsor {
 		"username": githubv4.String(username),
 		"count":    githubv4.Int(count),
 	}
-	err := client.Query(context.Background(), &sponsorsQuery, variables)
+	err := gitHubClient.Query(context.Background(), &sponsorsQuery, variables)
 	if err != nil {
 		panic(err)
 	}

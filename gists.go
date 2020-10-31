@@ -27,7 +27,7 @@ func gists(count int) []Gist {
 		"username": githubv4.String(username),
 		"count":    githubv4.Int(count),
 	}
-	err := client.Query(context.Background(), &gistsQuery, variables)
+	err := gitHubClient.Query(context.Background(), &gistsQuery, variables)
 	if err != nil {
 		panic(err)
 	}
