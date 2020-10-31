@@ -63,7 +63,7 @@ func recentContributions(count int) []Contribution {
 	variables := map[string]interface{}{
 		"username": githubv4.String(username),
 	}
-	err := client.Query(context.Background(), &recentContributionsQuery, variables)
+	err := gitHubClient.Query(context.Background(), &recentContributionsQuery, variables)
 	if err != nil {
 		panic(err)
 	}
@@ -104,7 +104,7 @@ func recentRepos(count int) []Repo {
 		"username": githubv4.String(username),
 		"count":    githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
 	}
-	err := client.Query(context.Background(), &recentReposQuery, variables)
+	err := gitHubClient.Query(context.Background(), &recentReposQuery, variables)
 	if err != nil {
 		panic(err)
 	}
@@ -136,7 +136,7 @@ func recentReleases(count int) []Repo {
 			"username": githubv4.String(username),
 			"after":    after,
 		}
-		err := client.Query(context.Background(), &recentReleasesQuery, variables)
+		err := gitHubClient.Query(context.Background(), &recentReleasesQuery, variables)
 		if err != nil {
 			panic(err)
 		}

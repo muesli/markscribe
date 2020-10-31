@@ -139,6 +139,26 @@ Created: {{humanize .CreatedAt}}
 
 This function requires GitHub authentication!
 
+### Your GoodReads reviews
+
+```
+{{range goodReadsReviews 5}}
+- {{.Book.Title}} - {{.Book.Link}} - {{.Rating}} - {{humanize .DateUpdated}}
+{{- end}}
+```
+
+This function requires GoodReads API key!
+
+### Your GoodReads currently reading books
+
+```
+{{range goodReadsCurrentlyReading 5}}
+- {{.Book.Title}} - {{.Book.Link}} - {{humanize .DateUpdated}}
+{{- end}}
+```
+
+This function requires GoodReads API key!
+
 ## Template Engine
 
 markscribe uses Go's powerful template engine. You can find its documentation
@@ -151,6 +171,14 @@ valid GitHub token in an environment variable called `GITHUB_TOKEN`. You can
 create a new token by going to your profile settings:
 
 `Developer settings` > `Personal access tokens` > `Generate new token`
+
+## GoodReads API key
+
+In order to access some of GoodReads' API, markscribe requires you to provide a
+valid GoodReads key in an environment variable called `GOODREADS_TOKEN`. You can
+create a new token by going [here](https://www.goodreads.com/api/keys).
+Then you need to go to your repository and add it, `Settings -> Secrets -> New secret`.
+You also need to set your GoodReads user ID in your secrets as `GOODREADS_USER_ID`.
 
 ## FAQ
 

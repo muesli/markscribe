@@ -26,7 +26,7 @@ var recentFollowersQuery struct {
 }
 
 func getUsername() (string, error) {
-	err := client.Query(context.Background(), &viewerQuery, nil)
+	err := gitHubClient.Query(context.Background(), &viewerQuery, nil)
 	if err != nil {
 		return "", err
 	}
@@ -42,7 +42,7 @@ func recentFollowers(count int) []User {
 		"username": githubv4.String(username),
 		"count":    githubv4.Int(count),
 	}
-	err := client.Query(context.Background(), &recentFollowersQuery, variables)
+	err := gitHubClient.Query(context.Background(), &recentFollowersQuery, variables)
 	if err != nil {
 		panic(err)
 	}

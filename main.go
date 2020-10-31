@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/KyleBanks/goodreads"
 	"html/template"
 	"io/ioutil"
 	"net/http"
@@ -14,8 +15,10 @@ import (
 )
 
 var (
-	client   *githubv4.Client
-	username string
+	gitHubClient    *githubv4.Client
+	goodReadsClient *goodreads.Client
+	goodReadsID     string
+	username        string
 
 	write = flag.String("write", "", "write output to")
 )
@@ -44,6 +47,9 @@ func main() {
 		"sponsors":            sponsors,
 		/* RSS */
 		"rss": rssFeed,
+		/* GoodReads */
+		"goodReadsReviews":          goodReadsReviews,
+		"goodReadsCurrentlyReading": goodReadsCurrentlyReading,
 		/* Utils */
 		"humanize": humanized,
 	}).Parse(string(tplIn))
@@ -53,16 +59,19 @@ func main() {
 	}
 
 	var httpClient *http.Client
-	token := os.Getenv("GITHUB_TOKEN")
-	if len(token) > 0 {
+	gitHubToken := os.Getenv("GITHUB_TOKEN")
+	goodReadsToken := os.Getenv("GOODREADS_TOKEN")
+	goodReadsID = os.Getenv("GOODREADS_USER_ID")
+	if len(gitHubToken) > 0 {
 		httpClient = oauth2.NewClient(context.Background(), oauth2.StaticTokenSource(
-			&oauth2.Token{AccessToken: token},
+			&oauth2.Token{AccessToken: gitHubToken},
 		))
 	}
 
-	client = githubv4.NewClient(httpClient)
+	gitHubClient = githubv4.NewClient(httpClient)
+	goodReadsClient = goodreads.NewClient(goodReadsToken)
 
-	if len(token) > 0 {
+	if len(gitHubToken) > 0 {
 		username, err = getUsername()
 		if err != nil {
 			fmt.Println("Can't retrieve GitHub profile:", err)
