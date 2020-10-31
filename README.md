@@ -1,8 +1,9 @@
 # markscribe
 
+[![Latest Release](https://img.shields.io/github/release/muesli/markscribe.svg)](https://github.com/muesli/markscribe/releases)
 [![Build Status](https://github.com/muesli/markscribe/workflows/build/badge.svg)](https://github.com/muesli/markscribe/actions)
-[![GoDoc](https://godoc.org/github.com/golang/gddo?status.svg)](https://godoc.org/github.com/muesli/markscribe)
 [![Go ReportCard](http://goreportcard.com/badge/muesli/markscribe)](http://goreportcard.com/report/muesli/markscribe)
+[![GoDoc](https://godoc.org/github.com/golang/gddo?status.svg)](https://pkg.go.dev/github.com/muesli/markscribe)
 
 Your personal markdown scribe with template-engine and Git(Hub) & RSS powers 📜
 
