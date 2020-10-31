@@ -4,8 +4,8 @@ import (
 	"context"
 	"flag"
 	"fmt"
-    "github.com/KyleBanks/goodreads"
-    "html/template"
+	"github.com/KyleBanks/goodreads"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -15,10 +15,10 @@ import (
 )
 
 var (
-    gitHubClient    *githubv4.Client
-    goodReadsClient *goodreads.Client
-    goodReadsID string
-	username string
+	gitHubClient    *githubv4.Client
+	goodReadsClient *goodreads.Client
+	goodReadsID     string
+	username        string
 
 	write = flag.String("write", "", "write output to")
 )
@@ -48,7 +48,7 @@ func main() {
 		/* RSS */
 		"rss": rssFeed,
 		/* GoodReads */
-		"goodReadsReviews": goodReadsReviews,
+		"goodReadsReviews":          goodReadsReviews,
 		"goodReadsCurrentlyReading": goodReadsCurrentlyReading,
 		/* Utils */
 		"humanize": humanized,
@@ -60,8 +60,8 @@ func main() {
 
 	var httpClient *http.Client
 	gitHubToken := os.Getenv("GITHUB_TOKEN")
-    goodReadsToken := os.Getenv("GOODREADS_TOKEN")
-    goodReadsID = os.Getenv("GOODREADS_USER_ID")
+	goodReadsToken := os.Getenv("GOODREADS_TOKEN")
+	goodReadsID = os.Getenv("GOODREADS_USER_ID")
 	if len(gitHubToken) > 0 {
 		httpClient = oauth2.NewClient(context.Background(), oauth2.StaticTokenSource(
 			&oauth2.Token{AccessToken: gitHubToken},
@@ -69,7 +69,7 @@ func main() {
 	}
 
 	gitHubClient = githubv4.NewClient(httpClient)
-    goodReadsClient = goodreads.NewClient(goodReadsToken)
+	goodReadsClient = goodreads.NewClient(goodReadsToken)
 
 	if len(gitHubToken) > 0 {
 		username, err = getUsername()
