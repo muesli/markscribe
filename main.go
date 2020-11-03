@@ -4,12 +4,12 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/KyleBanks/goodreads"
 	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
 
+	"github.com/KyleBanks/goodreads"
 	"github.com/shurcooL/githubv4"
 	"golang.org/x/oauth2"
 )
@@ -52,6 +52,7 @@ func main() {
 		"goodReadsCurrentlyReading": goodReadsCurrentlyReading,
 		/* Utils */
 		"humanize": humanized,
+		"reverse":  reverse,
 	}).Parse(string(tplIn))
 	if err != nil {
 		fmt.Println("Can't parse template:", err)
