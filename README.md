@@ -165,6 +165,22 @@ This function requires GoodReads API key!
 markscribe uses Go's powerful template engine. You can find its documentation
 here: https://golang.org/pkg/text/template/
 
+## Template Helpers
+
+markscribe comes with a few handy template helpers:
+
+To format timestamps, call `humanize`:
+
+```
+{{humanize .Timestamp}}
+```
+
+To reverse the order of a slice, call `reverse`:
+
+```
+{{reverse (rss "https://domain.tld/feed.xml" 5)}}
+```
+
 ## GitHub Authentication
 
 In order to access some of GitHub's API, markscribe requires you to provide a
