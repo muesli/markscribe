@@ -15,8 +15,8 @@ var recentStarsQuery struct {
 	} `graphql:"user(login:$username)"`
 }
 
-func recentStars(count int) []Star {
-	var stars []Star
+func recentStars(count int) []Repo {
+	var starredRepos []Repo
 	variables := map[string]interface{}{
 		"username": githubv4.String(username),
 		"count":    githubv4.Int(count),
@@ -27,13 +27,10 @@ func recentStars(count int) []Star {
 	}
 
 	for _, v := range recentStarsQuery.User.Stars.Nodes {
-		s := Star{
-			Repo: RepoFromQL(v),
-		}
-		stars = append(stars, s)
+		starredRepos = append(starredRepos, RepoFromQL(v))
 	}
 
-	return stars
+	return starredRepos
 }
 
 /*

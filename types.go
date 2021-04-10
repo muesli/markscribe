@@ -53,10 +53,6 @@ type User struct {
 	URL       string
 }
 
-type Star struct {
-	Repo Repo
-}
-
 type QLGist struct {
 	Name        githubv4.String
 	Description githubv4.String
