@@ -10,9 +10,7 @@ var recentStarsQuery struct {
 	User struct {
 		Login githubv4.String
 		Stars struct {
-			Edges []struct {
-				Node QLStar
-			}
+			Nodes []QLRepository
 		} `graphql:"starredRepositories(first: $count, orderBy: {field: STARRED_AT, direction: DESC})"`
 	} `graphql:"user(login:$username)"`
 }
@@ -28,8 +26,11 @@ func recentStars(count int) []Star {
 		panic(err)
 	}
 
-	for _, v := range recentStarsQuery.User.Stars.Edges {
-		stars = append(stars, StarFromQL(v.Node))
+	for _, v := range recentStarsQuery.User.Stars.Nodes {
+		s := Star{
+			Repo: RepoFromQL(v),
+		}
+		stars = append(stars, s)
 	}
 
 	return stars
@@ -40,10 +41,12 @@ func recentStars(count int) []Star {
   viewer {
     login
     starredRepositories(first: 3, orderBy: {field: STARRED_AT, direction: DESC}) {
-      edges {
-        node {
-          nameWithOwner
-          url
+      nodes {
+        nameWithOwner
+        url
+        description
+        stargazers {
+          totalCount
         }
       }
     }

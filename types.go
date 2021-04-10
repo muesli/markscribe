@@ -54,9 +54,7 @@ type User struct {
 }
 
 type Star struct {
-	Name        string
-	URL         string
-	Description string
+	Repo Repo
 }
 
 type QLGist struct {
@@ -102,12 +100,6 @@ type QLUser struct {
 	URL       githubv4.String
 }
 
-type QLStar struct {
-	NameWithOwner githubv4.String
-	URL           githubv4.String
-	Description   githubv4.String
-}
-
 func GistFromQL(gist QLGist) Gist {
 	return Gist{
 		Name:        string(gist.Name),
@@ -151,13 +143,5 @@ func UserFromQL(user QLUser) User {
 		Name:      string(user.Name),
 		AvatarURL: string(user.AvatarURL),
 		URL:       string(user.URL),
-	}
-}
-
-func StarFromQL(star QLStar) Star {
-	return Star{
-		Name:        string(star.NameWithOwner),
-		URL:         string(star.URL),
-		Description: string(star.Description),
 	}
 }
