@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/KyleBanks/goodreads"
@@ -56,6 +57,7 @@ func main() {
 		"humanize": humanized,
 		"reverse":  reverse,
 		"now":      time.Now,
+		"toLower":  strings.ToLower,
 	}).Parse(string(tplIn))
 	if err != nil {
 		fmt.Println("Can't parse template:", err)
