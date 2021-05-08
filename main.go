@@ -41,6 +41,7 @@ func main() {
 	tpl, err := template.New("tpl").Funcs(template.FuncMap{
 		/* GitHub */
 		"recentContributions": recentContributions,
+		"recentPullRequests":  recentPullRequests,
 		"recentRepos":         recentRepos,
 		"recentReleases":      recentReleases,
 		"followers":           recentFollowers,

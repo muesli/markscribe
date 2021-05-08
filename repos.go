@@ -27,6 +27,19 @@ var recentContributionsQuery struct {
 	} `graphql:"user(login:$username)"`
 }
 
+var recentPullRequestsQuery struct {
+	User struct {
+		Login                   githubv4.String
+		PullRequests struct {
+			TotalCount githubv4.Int
+			Edges      []struct {
+				Cursor githubv4.String
+				Node   QLPullRequest
+			}
+		} `graphql:"pullRequests(first: $count, orderBy: {field: CREATED_AT, direction: DESC})"`
+	} `graphql:"user(login:$username)"`
+}
+
 var recentReposQuery struct {
 	User struct {
 		Login        githubv4.String
@@ -94,6 +107,38 @@ func recentContributions(count int) []Contribution {
 		return contributions[:count]
 	}
 	return contributions
+}
+
+func recentPullRequests(count int) []PullRequest {
+	// fmt.Printf("Finding recently created pullRequests...\n")
+
+	var pullRequests []PullRequest
+	variables := map[string]interface{}{
+		"username": githubv4.String(username),
+		"count":    githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
+	}
+	err := gitHubClient.Query(context.Background(), &recentPullRequestsQuery, variables)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, v := range recentPullRequestsQuery.User.PullRequests.Edges {
+		// ignore meta-repo
+		if string(v.Node.Repository.NameWithOwner) == fmt.Sprintf("%s/%s", username, username) {
+			continue
+		}
+		if v.Node.Repository.IsPrivate {
+			continue
+		}
+
+		pullRequests = append(pullRequests, PullRequestFromQL(v.Node))
+		if len(pullRequests) == count {
+			break
+		}
+	}
+
+	// fmt.Printf("Found %d pullRequests!\n", len(pullRequests))
+	return pullRequests
 }
 
 func recentRepos(count int) []Repo {
