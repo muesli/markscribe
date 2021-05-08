@@ -74,6 +74,22 @@ Occurred: {{humanize .OccurredAt}}
 
 This function requires GitHub authentication!
 
+### Your recent pull requests
+
+```
+{{range recentPullRequests 10}}
+Title: {{.Title}}
+URL: {{.URL}}
+State: {{.State}}
+CreatedAt: {{humanize .CreatedAt}}
+Repository name: {{.Repo.Name}}
+Repository description: {{.Repo.Description}}
+Repository URL: {{.Repo.URL}}
+{{end}}
+```
+
+This function requires GitHub authentication!
+
 ### Repositories you recently created
 
 ```

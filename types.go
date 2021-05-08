@@ -18,6 +18,14 @@ type Gist struct {
 	CreatedAt   time.Time
 }
 
+type PullRequest struct {
+	Title     string
+	URL       string
+	State     string
+	CreatedAt time.Time
+	Repo      Repo
+}
+
 type Release struct {
 	Name        string
 	TagName     string
@@ -50,6 +58,14 @@ type QLGist struct {
 	Description githubv4.String
 	URL         githubv4.String
 	CreatedAt   githubv4.DateTime
+}
+
+type QLPullRequest struct {
+	URL        githubv4.String
+	Title      githubv4.String
+	State      githubv4.PullRequestState
+	CreatedAt  githubv4.DateTime
+	Repository QLRepository
 }
 
 type QLRelease struct {
@@ -86,6 +102,16 @@ func GistFromQL(gist QLGist) Gist {
 		Description: string(gist.Description),
 		URL:         string(gist.URL),
 		CreatedAt:   gist.CreatedAt.Time,
+	}
+}
+
+func PullRequestFromQL(pullRequest QLPullRequest) PullRequest {
+	return PullRequest{
+		Title:     string(pullRequest.Title),
+		URL:       string(pullRequest.URL),
+		State:     string(pullRequest.State),
+		CreatedAt: pullRequest.CreatedAt.Time,
+		Repo:      RepoFromQL(pullRequest.Repository),
 	}
 }
 
