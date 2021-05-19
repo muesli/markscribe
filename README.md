@@ -2,7 +2,7 @@
 
 [![Latest Release](https://img.shields.io/github/release/muesli/markscribe.svg)](https://github.com/muesli/markscribe/releases)
 [![Build Status](https://github.com/muesli/markscribe/workflows/build/badge.svg)](https://github.com/muesli/markscribe/actions)
-[![Go ReportCard](http://goreportcard.com/badge/muesli/markscribe)](http://goreportcard.com/report/muesli/markscribe)
+[![Go ReportCard](https://goreportcard.com/badge/muesli/markscribe)](https://goreportcard.com/report/muesli/markscribe)
 [![GoDoc](https://godoc.org/github.com/golang/gddo?status.svg)](https://pkg.go.dev/github.com/muesli/markscribe)
 
 Your personal markdown scribe with template-engine and Git(Hub) & RSS powers 📜
@@ -35,7 +35,7 @@ packages.
 
 Alternatively you can also build `markscribe` from source. Make sure you have a
 working Go environment (Go 1.11 or higher is required). See the
-[install instructions](http://golang.org/doc/install.html).
+[install instructions](https://golang.org/doc/install.html).
 
 To install markscribe, simply run:
 
