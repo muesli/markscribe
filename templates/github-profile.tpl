@@ -27,7 +27,7 @@
 
 #### ⭐ Recent Stars
 {{range recentStars 10}}
-- [{{.Repo.Description}}]({{.Repo.URL}}) ({{humanize .CreatedAt}})
+- [{{.Repo.Name}}]({{.Repo.URL}}) - {{.Repo.Description}} ({{humanize .StarredAt}})
 {{- end}}
 
 #### ❤️ These awesome people sponsor me (thank you!)
