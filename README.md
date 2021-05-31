@@ -88,6 +88,17 @@ Repository URL: {{.Repo.URL}}
 {{end}}
 ```
 
+### Repositories you recently starred
+
+```
+{{range recentStars 10}}
+Name: {{.Name}}
+Description: {{.Description}}
+URL: {{.URL}})
+Stars: {{.Stargazers}}
+{{end}}
+```
+
 This function requires GitHub authentication!
 
 ### Repositories you recently created

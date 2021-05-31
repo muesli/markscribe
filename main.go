@@ -46,6 +46,7 @@ func main() {
 		"recentRepos":         recentRepos,
 		"recentReleases":      recentReleases,
 		"followers":           recentFollowers,
+		"recentStars":         recentStars,
 		"gists":               gists,
 		"sponsors":            sponsors,
 		/* RSS */

@@ -18,6 +18,11 @@ type Gist struct {
 	CreatedAt   time.Time
 }
 
+type Star struct {
+	StarredAt time.Time
+	Repo      Repo
+}
+
 type PullRequest struct {
 	Title     string
 	URL       string
