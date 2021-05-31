@@ -88,6 +88,8 @@ Repository URL: {{.Repo.URL}}
 {{end}}
 ```
 
+This function requires GitHub authentication!
+
 ### Repositories you recently starred
 
 ```
