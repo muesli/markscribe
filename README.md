@@ -85,6 +85,7 @@ CreatedAt: {{humanize .CreatedAt}}
 Repository name: {{.Repo.Name}}
 Repository description: {{.Repo.Description}}
 Repository URL: {{.Repo.URL}}
+{{end}}
 ```
 
 ### Repositories you recently starred
