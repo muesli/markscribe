@@ -25,6 +25,11 @@
 - [{{.Description}}]({{.URL}}) ({{humanize .CreatedAt}})
 {{- end}}
 
+#### ⭐ Recent Stars
+{{range recentStars 10}}
+- [{{.Repo.Description}}]({{.Repo.URL}}) ({{humanize .CreatedAt}})
+{{- end}}
+
 #### ❤️ These awesome people sponsor me (thank you!)
 {{range sponsors 5}}
 - [{{.User.Login}}]({{.User.URL}}) ({{humanize .CreatedAt}})

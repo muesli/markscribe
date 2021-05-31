@@ -10,13 +10,18 @@ var recentStarsQuery struct {
 	User struct {
 		Login githubv4.String
 		Stars struct {
-			Nodes []QLRepository
+			TotalCount githubv4.Int
+			Edges      []struct {
+				Cursor    githubv4.String
+				StarredAt githubv4.DateTime
+				Node      QLRepository
+			}
 		} `graphql:"starredRepositories(first: $count, orderBy: {field: STARRED_AT, direction: DESC})"`
 	} `graphql:"user(login:$username)"`
 }
 
-func recentStars(count int) []Repo {
-	var starredRepos []Repo
+func recentStars(count int) []Star {
+	var starredRepos []Star
 	variables := map[string]interface{}{
 		"username": githubv4.String(username),
 		"count":    githubv4.Int(count),
@@ -26,8 +31,11 @@ func recentStars(count int) []Repo {
 		panic(err)
 	}
 
-	for _, v := range recentStarsQuery.User.Stars.Nodes {
-		starredRepos = append(starredRepos, RepoFromQL(v))
+	for _, v := range recentStarsQuery.User.Stars.Edges {
+		starredRepos = append(starredRepos, Star{
+			StarredAt: v.StarredAt.Time,
+			Repo:      RepoFromQL(v.Node),
+		})
 	}
 
 	return starredRepos
@@ -35,18 +43,20 @@ func recentStars(count int) []Repo {
 
 /*
 {
-  viewer {
-    login
-    starredRepositories(first: 3, orderBy: {field: STARRED_AT, direction: DESC}) {
-      nodes {
-        nameWithOwner
-        url
-        description
-        stargazers {
-          totalCount
-        }
-      }
-    }
-  }
+	viewer {
+		login
+		starredRepositories(first: 3, orderBy: {field: STARRED_AT, direction: DESC}) {
+			totalCount
+			edges {
+				cursor
+				starredAt
+				node {
+					nameWithOwner
+					url
+					description
+				}
+			}
+		}
+	}
 }
 */

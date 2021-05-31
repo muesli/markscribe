@@ -29,7 +29,7 @@ var recentContributionsQuery struct {
 
 var recentPullRequestsQuery struct {
 	User struct {
-		Login                   githubv4.String
+		Login        githubv4.String
 		PullRequests struct {
 			TotalCount githubv4.Int
 			Edges      []struct {
