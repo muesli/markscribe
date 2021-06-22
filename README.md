@@ -72,7 +72,8 @@ Occurred: {{humanize .OccurredAt}}
 {{end}}
 ```
 
-This function requires GitHub authentication!
+This function requires GitHub authentication with the following API scopes:
+`repo:status`, `public_repo`, `read:user`.
 
 ### Your recent pull requests
 
@@ -88,7 +89,8 @@ Repository URL: {{.Repo.URL}}
 {{end}}
 ```
 
-This function requires GitHub authentication!
+This function requires GitHub authentication with the following API scopes:
+`repo:status`, `public_repo`, `read:user`.
 
 ### Repositories you recently starred
 
@@ -101,7 +103,8 @@ Stars: {{.Stargazers}}
 {{end}}
 ```
 
-This function requires GitHub authentication!
+This function requires GitHub authentication with the following API scopes:
+`repo:status`, `public_repo`, `read:user`.
 
 ### Repositories you recently created
 
@@ -114,7 +117,8 @@ Stars: {{.Stargazers}}
 {{end}}
 ```
 
-This function requires GitHub authentication!
+This function requires GitHub authentication with the following API scopes:
+`repo:status`, `public_repo`, `read:user`.
 
 ### Recent releases you contributed to
 
@@ -127,7 +131,8 @@ Published: {{humanize .LastRelease.PublishedAt}}
 {{end}}
 ```
 
-This function requires GitHub authentication!
+This function requires GitHub authentication with the following API scopes:
+`repo:status`, `public_repo`, `read:user`.
 
 ### Your published gists
 
@@ -140,7 +145,8 @@ Created: {{humanize .CreatedAt}}
 {{end}}
 ```
 
-This function requires GitHub authentication!
+This function requires GitHub authentication with the following API scopes:
+`repo:status`, `public_repo`, `read:user`.
 
 ### Your latest followers
 
@@ -153,7 +159,8 @@ URL: {{.URL}}
 {{end}}
 ```
 
-This function requires GitHub authentication!
+This function requires GitHub authentication with the following API scopes:
+`read:user`.
 
 ### Your sponsors
 
@@ -167,7 +174,8 @@ Created: {{humanize .CreatedAt}}
 {{end}}
 ```
 
-This function requires GitHub authentication!
+This function requires GitHub authentication with the following API scopes:
+`repo:status`, `public_repo`, `read:user`, `read:org`.
 
 ### Your GoodReads reviews
 
