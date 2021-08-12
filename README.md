@@ -96,10 +96,10 @@ This function requires GitHub authentication with the following API scopes:
 
 ```
 {{range recentStars 10}}
-Name: {{.Name}}
-Description: {{.Description}}
-URL: {{.URL}})
-Stars: {{.Stargazers}}
+Name: {{.Repo.Name}}
+Description: {{.Repo.Description}}
+URL: {{.Repo.URL}})
+Stars: {{.Repo.Stargazers}}
 {{end}}
 ```
 
@@ -236,8 +236,8 @@ You also need to set your GoodReads user ID in your secrets as `GOODREADS_USER_I
 
 ## FAQ
 
-Q: That's awesome, but can you expose more APIs and data?  
+Q: That's awesome, but can you expose more APIs and data?
 A: Of course, just open a new issue and let me know what you'd like to do with markscribe!
 
-Q: That's awesome, but I don't have my own server to run this on. Can you help?  
+Q: That's awesome, but I don't have my own server to run this on. Can you help?
 A: Check out [readme-scribe](https://github.com/muesli/readme-scribe/), a GitHub Action that runs markscribe for you!
