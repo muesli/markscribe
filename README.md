@@ -96,10 +96,10 @@ This function requires GitHub authentication with the following API scopes:
 
 ```
 {{range recentStars 10}}
-Name: {{.Name}}
-Description: {{.Description}}
-URL: {{.URL}})
-Stars: {{.Stargazers}}
+Name: {{.Repo.Name}}
+Description: {{.Repo.Description}}
+URL: {{.Repo.URL}})
+Stars: {{.Repo.Stargazers}}
 {{end}}
 ```
 
