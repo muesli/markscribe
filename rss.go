@@ -4,12 +4,14 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed"
+	ext "github.com/mmcdole/gofeed/extensions"
 )
 
 type RSSEntry struct {
 	Title       string
 	URL         string
 	PublishedAt time.Time
+	Extensions  ext.Extensions
 }
 
 func rssFeed(url string, count int) []RSSEntry {
@@ -28,6 +30,7 @@ func rssFeed(url string, count int) []RSSEntry {
 			Title:       v.Title,
 			URL:         v.Link,
 			PublishedAt: *v.PublishedParsed,
+			Extensions:  v.Extensions,
 		})
 		if len(r) == count {
 			break
