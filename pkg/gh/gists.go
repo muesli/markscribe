@@ -11,7 +11,7 @@ import (
 // GetRecentGists retrieves 'n' recent gists.
 func (c *Client) GetRecentGists(n int) []types.Gist {
 	gists := []types.Gist{}
-	variables := map[string]interface{}{
+	variables := Map{
 		"count":    githubv4.Int(n),
 		"username": c.username,
 	}
