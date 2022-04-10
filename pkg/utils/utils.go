@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
-func humanized(t interface{}) string {
+func Humanized(t interface{}) string {
 	switch v := t.(type) {
 	case time.Time:
 		// flatten time to prevent updating README too often:
@@ -24,9 +24,10 @@ func humanized(t interface{}) string {
 	}
 }
 
-func reverse(s interface{}) interface{} {
+func Reverse(s interface{}) interface{} {
 	n := reflect.ValueOf(s).Len()
 	swap := reflect.Swapper(s)
+
 	for i, j := 0, n-1; i < j; i, j = i+1, j-1 {
 		swap(i, j)
 	}
