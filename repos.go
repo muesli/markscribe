@@ -49,7 +49,7 @@ var recentReposQuery struct {
 				Cursor githubv4.String
 				Node   qlRepository
 			}
-		} `graphql:"repositories(first: $count, privacy: PUBLIC, isFork: false, ownerAffiliations: OWNER, orderBy: {field: CREATED_AT, direction: DESC})"`
+		} `graphql:"repositories(first: $count, privacy: PUBLIC, isFork: $isFork, ownerAffiliations: OWNER, orderBy: {field: CREATED_AT, direction: DESC})"`
 	} `graphql:"user(login:$username)"`
 }
 
@@ -148,6 +148,37 @@ func recentRepos(count int) []Repo {
 	variables := map[string]interface{}{
 		"username": githubv4.String(username),
 		"count":    githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
+		"isFork":   githubv4.Boolean(false),
+	}
+	err := gitHubClient.Query(context.Background(), &recentReposQuery, variables)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, v := range recentReposQuery.User.Repositories.Edges {
+		// ignore meta-repo
+		if string(v.Node.NameWithOwner) == fmt.Sprintf("%s/%s", username, username) {
+			continue
+		}
+
+		repos = append(repos, repoFromQL(v.Node))
+		if len(repos) == count {
+			break
+		}
+	}
+
+	// fmt.Printf("Found %d repos!\n", len(repos))
+	return repos
+}
+
+func recentForks(count int) []Repo {
+	// fmt.Printf("Finding recently created repos...\n")
+
+	var repos []Repo
+	variables := map[string]interface{}{
+		"username": githubv4.String(username),
+		"count":    githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
+		"isFork":   githubv4.Boolean(true),
 	}
 	err := gitHubClient.Query(context.Background(), &recentReposQuery, variables)
 	if err != nil {
