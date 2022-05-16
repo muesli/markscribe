@@ -44,6 +44,7 @@ func main() {
 		"recentContributions": recentContributions,
 		"recentPullRequests":  recentPullRequests,
 		"recentRepos":         recentRepos,
+		"recentForks":         recentForks,
 		"recentReleases":      recentReleases,
 		"followers":           recentFollowers,
 		"recentStars":         recentStars,

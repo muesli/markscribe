@@ -120,6 +120,20 @@ Stars: {{.Stargazers}}
 This function requires GitHub authentication with the following API scopes:
 `repo:status`, `public_repo`, `read:user`.
 
+### Forks you recently created
+
+```
+{{range recentForks 10}}
+Name: {{.Name}}
+Description: {{.Description}}
+URL: {{.URL}})
+Stars: {{.Stargazers}}
+{{end}}
+```
+
+This function requires GitHub authentication with the following API scopes:
+`repo:status`, `public_repo`, `read:user`.
+
 ### Recent releases you contributed to
 
 ```
