@@ -6,6 +6,7 @@ import (
 	"github.com/mmcdole/gofeed"
 )
 
+// RSSEntry represents a single RSS entry.
 type RSSEntry struct {
 	Title       string
 	URL         string

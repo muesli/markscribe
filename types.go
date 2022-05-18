@@ -6,11 +6,13 @@ import (
 	"github.com/shurcooL/githubv4"
 )
 
+// Contribution represents a contribution to a repo.
 type Contribution struct {
 	OccurredAt time.Time
 	Repo       Repo
 }
 
+// Gist represents a gist.
 type Gist struct {
 	Name        string
 	Description string
@@ -18,11 +20,13 @@ type Gist struct {
 	CreatedAt   time.Time
 }
 
+// Star represents a star/favorite event.
 type Star struct {
 	StarredAt time.Time
 	Repo      Repo
 }
 
+// PullRequest represents a pull request.
 type PullRequest struct {
 	Title     string
 	URL       string
@@ -31,6 +35,7 @@ type PullRequest struct {
 	Repo      Repo
 }
 
+// Release represents a release.
 type Release struct {
 	Name        string
 	TagName     string
@@ -38,6 +43,7 @@ type Release struct {
 	URL         string
 }
 
+// Repo represents a git repo.
 type Repo struct {
 	Name        string
 	URL         string
@@ -46,11 +52,13 @@ type Repo struct {
 	LastRelease Release
 }
 
+// Sponsor represents a sponsor.
 type Sponsor struct {
 	User      User
 	CreatedAt time.Time
 }
 
+// User represents a SCM user.
 type User struct {
 	Login     string
 	Name      string
@@ -58,22 +66,22 @@ type User struct {
 	URL       string
 }
 
-type QLGist struct {
+type qlGist struct {
 	Name        githubv4.String
 	Description githubv4.String
 	URL         githubv4.String
 	CreatedAt   githubv4.DateTime
 }
 
-type QLPullRequest struct {
+type qlPullRequest struct {
 	URL        githubv4.String
 	Title      githubv4.String
 	State      githubv4.PullRequestState
 	CreatedAt  githubv4.DateTime
-	Repository QLRepository
+	Repository qlRepository
 }
 
-type QLRelease struct {
+type qlRelease struct {
 	Nodes []struct {
 		Name         githubv4.String
 		TagName      githubv4.String
@@ -84,7 +92,7 @@ type QLRelease struct {
 	}
 }
 
-type QLRepository struct {
+type qlRepository struct {
 	NameWithOwner githubv4.String
 	URL           githubv4.String
 	Description   githubv4.String
@@ -94,14 +102,14 @@ type QLRepository struct {
 	}
 }
 
-type QLUser struct {
+type qlUser struct {
 	Login     githubv4.String
 	Name      githubv4.String
 	AvatarURL githubv4.String
 	URL       githubv4.String
 }
 
-func GistFromQL(gist QLGist) Gist {
+func gistFromQL(gist qlGist) Gist {
 	return Gist{
 		Name:        string(gist.Name),
 		Description: string(gist.Description),
@@ -110,17 +118,17 @@ func GistFromQL(gist QLGist) Gist {
 	}
 }
 
-func PullRequestFromQL(pullRequest QLPullRequest) PullRequest {
+func pullRequestFromQL(pullRequest qlPullRequest) PullRequest {
 	return PullRequest{
 		Title:     string(pullRequest.Title),
 		URL:       string(pullRequest.URL),
 		State:     string(pullRequest.State),
 		CreatedAt: pullRequest.CreatedAt.Time,
-		Repo:      RepoFromQL(pullRequest.Repository),
+		Repo:      repoFromQL(pullRequest.Repository),
 	}
 }
 
-func ReleaseFromQL(release QLRelease) Release {
+func releaseFromQL(release qlRelease) Release {
 	return Release{
 		Name:        string(release.Nodes[0].Name),
 		TagName:     string(release.Nodes[0].TagName),
@@ -129,7 +137,7 @@ func ReleaseFromQL(release QLRelease) Release {
 	}
 }
 
-func RepoFromQL(repo QLRepository) Repo {
+func repoFromQL(repo qlRepository) Repo {
 	return Repo{
 		Name:        string(repo.NameWithOwner),
 		URL:         string(repo.URL),
@@ -138,7 +146,7 @@ func RepoFromQL(repo QLRepository) Repo {
 	}
 }
 
-func UserFromQL(user QLUser) User {
+func userFromQL(user qlUser) User {
 	return User{
 		Login:     string(user.Login),
 		Name:      string(user.Name),

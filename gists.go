@@ -13,7 +13,7 @@ var gistsQuery struct {
 			TotalCount githubv4.Int
 			Edges      []struct {
 				Cursor githubv4.String
-				Node   QLGist
+				Node   qlGist
 			}
 		} `graphql:"gists(first: $count, orderBy: {field: CREATED_AT, direction: DESC})"`
 	} `graphql:"user(login:$username)"`
@@ -34,7 +34,7 @@ func gists(count int) []Gist {
 
 	// fmt.Printf("%+v\n", query)
 	for _, v := range gistsQuery.User.Gists.Edges {
-		gists = append(gists, GistFromQL(v.Node))
+		gists = append(gists, gistFromQL(v.Node))
 	}
 
 	// fmt.Printf("Found %d gists!\n", len(gists))

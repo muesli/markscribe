@@ -17,8 +17,8 @@ var sponsorsQuery struct {
 					CreatedAt     githubv4.DateTime
 					SponsorEntity struct {
 						Typename     githubv4.String `graphql:"__typename"`
-						User         QLUser          `graphql:"... on User"`
-						Organization QLUser          `graphql:"... on Organization"`
+						User         qlUser          `graphql:"... on User"`
+						Organization qlUser          `graphql:"... on Organization"`
 					}
 				}
 			}
@@ -45,12 +45,12 @@ func sponsors(count int) []Sponsor {
 		switch v.Node.SponsorEntity.Typename {
 		case "User":
 			sponsors = append(sponsors, Sponsor{
-				User:      UserFromQL(v.Node.SponsorEntity.User),
+				User:      userFromQL(v.Node.SponsorEntity.User),
 				CreatedAt: v.Node.CreatedAt.Time,
 			})
 		case "Organization":
 			sponsors = append(sponsors, Sponsor{
-				User:      UserFromQL(v.Node.SponsorEntity.Organization),
+				User:      userFromQL(v.Node.SponsorEntity.Organization),
 				CreatedAt: v.Node.CreatedAt.Time,
 			})
 		}

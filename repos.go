@@ -21,7 +21,7 @@ var recentContributionsQuery struct {
 						}
 					}
 				} `graphql:"contributions(first: 1)"`
-				Repository QLRepository
+				Repository qlRepository
 			} `graphql:"commitContributionsByRepository(maxRepositories: 100)"`
 		}
 	} `graphql:"user(login:$username)"`
@@ -34,7 +34,7 @@ var recentPullRequestsQuery struct {
 			TotalCount githubv4.Int
 			Edges      []struct {
 				Cursor githubv4.String
-				Node   QLPullRequest
+				Node   qlPullRequest
 			}
 		} `graphql:"pullRequests(first: $count, orderBy: {field: CREATED_AT, direction: DESC})"`
 	} `graphql:"user(login:$username)"`
@@ -47,7 +47,7 @@ var recentReposQuery struct {
 			TotalCount githubv4.Int
 			Edges      []struct {
 				Cursor githubv4.String
-				Node   QLRepository
+				Node   qlRepository
 			}
 		} `graphql:"repositories(first: $count, privacy: PUBLIC, isFork: false, ownerAffiliations: OWNER, orderBy: {field: CREATED_AT, direction: DESC})"`
 	} `graphql:"user(login:$username)"`
@@ -61,8 +61,8 @@ var recentReleasesQuery struct {
 			Edges      []struct {
 				Cursor githubv4.String
 				Node   struct {
-					QLRepository
-					Releases QLRelease `graphql:"releases(first: 10, orderBy: {field: CREATED_AT, direction: DESC})"`
+					qlRepository
+					Releases qlRelease `graphql:"releases(first: 10, orderBy: {field: CREATED_AT, direction: DESC})"`
 				}
 			}
 		} `graphql:"repositoriesContributedTo(first: 100, after:$after includeUserRepositories: true, contributionTypes: COMMIT, privacy: PUBLIC)"`
@@ -91,7 +91,7 @@ func recentContributions(count int) []Contribution {
 		}
 
 		c := Contribution{
-			Repo:       RepoFromQL(v.Repository),
+			Repo:       repoFromQL(v.Repository),
 			OccurredAt: v.Contributions.Edges[0].Node.OccurredAt.Time,
 		}
 
@@ -131,7 +131,7 @@ func recentPullRequests(count int) []PullRequest {
 			continue
 		}
 
-		pullRequests = append(pullRequests, PullRequestFromQL(v.Node))
+		pullRequests = append(pullRequests, pullRequestFromQL(v.Node))
 		if len(pullRequests) == count {
 			break
 		}
@@ -160,7 +160,7 @@ func recentRepos(count int) []Repo {
 			continue
 		}
 
-		repos = append(repos, RepoFromQL(v.Node))
+		repos = append(repos, repoFromQL(v.Node))
 		if len(repos) == count {
 			break
 		}
@@ -192,7 +192,7 @@ func recentReleases(count int) []Repo {
 		}
 
 		for _, v := range recentReleasesQuery.User.RepositoriesContributedTo.Edges {
-			r := RepoFromQL(v.Node.QLRepository)
+			r := repoFromQL(v.Node.qlRepository)
 
 			for _, rel := range v.Node.Releases.Nodes {
 				if rel.IsPrerelease || rel.IsDraft {
@@ -202,7 +202,7 @@ func recentReleases(count int) []Repo {
 					v.Node.Releases.Nodes[0].PublishedAt.Time.IsZero() {
 					continue
 				}
-				r.LastRelease = ReleaseFromQL(v.Node.Releases)
+				r.LastRelease = releaseFromQL(v.Node.Releases)
 				break
 			}
 
@@ -210,7 +210,7 @@ func recentReleases(count int) []Repo {
 				repos = append(repos, r)
 			}
 
-			after = &v.Cursor
+			after = githubv4.NewString(v.Cursor)
 		}
 	}
 
