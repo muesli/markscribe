@@ -93,7 +93,7 @@ func main() {
 			fmt.Println("Can't create:", err)
 			os.Exit(1)
 		}
-		defer f.Close()
+		defer f.Close() //nolint: errcheck
 		w = f
 	}
 

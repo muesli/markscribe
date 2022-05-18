@@ -19,7 +19,7 @@ var recentFollowersQuery struct {
 			TotalCount githubv4.Int
 			Edges      []struct {
 				Cursor githubv4.String
-				Node   QLUser
+				Node   qlUser
 			}
 		} `graphql:"followers(first: $count)"`
 	} `graphql:"user(login:$username)"`
@@ -49,7 +49,7 @@ func recentFollowers(count int) []User {
 
 	// fmt.Printf("%+v\n", query)
 	for _, v := range recentFollowersQuery.User.Followers.Edges {
-		users = append(users, UserFromQL(v.Node))
+		users = append(users, userFromQL(v.Node))
 	}
 
 	// fmt.Printf("Found %d recent followers!\n", len(users))

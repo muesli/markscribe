@@ -14,7 +14,7 @@ var recentStarsQuery struct {
 			Edges      []struct {
 				Cursor    githubv4.String
 				StarredAt githubv4.DateTime
-				Node      QLRepository
+				Node      qlRepository
 			}
 		} `graphql:"starredRepositories(first: $count, orderBy: {field: STARRED_AT, direction: DESC})"`
 	} `graphql:"user(login:$username)"`
@@ -34,7 +34,7 @@ func recentStars(count int) []Star {
 	for _, v := range recentStarsQuery.User.Stars.Edges {
 		starredRepos = append(starredRepos, Star{
 			StarredAt: v.StarredAt.Time,
-			Repo:      RepoFromQL(v.Node),
+			Repo:      repoFromQL(v.Node),
 		})
 	}
 
