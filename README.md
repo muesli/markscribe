@@ -75,8 +75,9 @@ Occurred: {{humanize .OccurredAt}}
 This function requires GitHub authentication with the following API scopes:
 `repo:status`, `public_repo`, `read:user`.
 
-### Your recent pull requests
+### Your recent pull requests/non-personal pull requests
 
+*pull requests*
 ```
 {{range recentPullRequests 10}}
 Title: {{.Title}}
@@ -87,6 +88,12 @@ Repository name: {{.Repo.Name}}
 Repository description: {{.Repo.Description}}
 Repository URL: {{.Repo.URL}}
 {{end}}
+```
+
+*non-personal pull requests*
+```
+{{range recentNonPersonalPullRequests 10}}
+... (rest is the same as pull requests)
 ```
 
 This function requires GitHub authentication with the following API scopes:

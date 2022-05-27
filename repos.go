@@ -40,6 +40,16 @@ var recentPullRequestsQuery struct {
 	} `graphql:"user(login:$username)"`
 }
 
+var recentNonPersonalPullRequestsQuery struct {
+	Search struct {
+		Edges []struct {
+			Node struct {
+				PullRequest qlPullRequest `graphql:"... on PullRequest"`
+			}
+		}
+	} `graphql:"search(first: $count, type: $searchType, query: $searchQuery)"`
+}
+
 var recentReposQuery struct {
 	User struct {
 		Login        githubv4.String
@@ -135,6 +145,32 @@ func recentPullRequests(count int) []PullRequest {
 		if len(pullRequests) == count {
 			break
 		}
+	}
+
+	// fmt.Printf("Found %d pullRequests!\n", len(pullRequests))
+	return pullRequests
+}
+
+func recentNonPersonalPullRequests(count int) []PullRequest {
+	// fmt.Printf("Finding recently created pullRequests...\n")
+
+	var pullRequests []PullRequest
+	variables := map[string]interface{}{
+		"count":       githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
+		"searchType":  githubv4.SearchTypeIssue,
+		"searchQuery": githubv4.String(fmt.Sprintf("is:pr is:public author:%s -user:%s", username, username)),
+	}
+	err := gitHubClient.Query(context.Background(), &recentNonPersonalPullRequestsQuery, variables)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, v := range recentNonPersonalPullRequestsQuery.Search.Edges {
+		if string(v.Node.PullRequest.State) != string(githubv4.PullRequestStateMerged) {
+			continue
+		}
+
+		pullRequests = append(pullRequests, pullRequestFromQL(v.Node.PullRequest))
 	}
 
 	// fmt.Printf("Found %d pullRequests!\n", len(pullRequests))
