@@ -61,6 +61,7 @@ func main() {
 		"humanize": humanized,
 		"reverse":  reverse,
 		"now":      time.Now,
+		"contains": strings.Contains,
 		"toLower":  strings.ToLower,
 	}).Parse(string(tplIn))
 	if err != nil {
