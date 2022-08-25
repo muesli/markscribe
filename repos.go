@@ -69,6 +69,19 @@ var recentReleasesQuery struct {
 	} `graphql:"user(login:$username)"`
 }
 
+var repoQuery struct {
+	Repository struct {
+		Description   githubv4.String
+		NameWithOwner githubv4.String
+		IsPrivate     githubv4.Boolean
+		URL           githubv4.String
+		Stargazers    struct {
+			TotalCount githubv4.Int
+		}
+		Releases qlRelease `graphql:"releases(last: 1)"`
+	} `graphql:"repository(owner:$owner, name:$name)"`
+}
+
 func recentContributions(count int) []Contribution {
 	// fmt.Printf("Finding recent contributions...\n")
 
@@ -257,6 +270,26 @@ func recentReleases(count int) []Repo {
 		return repos[:count]
 	}
 	return repos
+}
+
+func repo(owner, name string) Repo {
+	variables := map[string]interface{}{
+		"owner": githubv4.String(owner),
+		"name":  githubv4.String(name),
+	}
+	err := gitHubClient.Query(context.Background(), &repoQuery, variables)
+	if err != nil {
+		panic(err)
+	}
+	repo := repoQuery.Repository
+	return Repo{
+		Name:        string(repo.NameWithOwner),
+		URL:         string(repo.URL),
+		Description: string(repo.Description),
+		Stargazers:  int(repo.Stargazers.TotalCount),
+		IsPrivate:   bool(repo.IsPrivate),
+		LastRelease: releaseFromQL(repo.Releases),
+	}
 }
 
 /*

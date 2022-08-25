@@ -50,6 +50,7 @@ func main() {
 		"recentStars":         recentStars,
 		"gists":               gists,
 		"sponsors":            sponsors,
+		"repo":                repo,
 		/* RSS */
 		"rss": rssFeed,
 		/* GoodReads */
