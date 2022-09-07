@@ -27,6 +27,7 @@ func rssFeed(url string, count int) []RSSEntry {
 
 		r = append(r, RSSEntry{
 			Title:       v.Title,
+			Description: v.Description,
 			URL:         v.Link,
 			PublishedAt: *v.PublishedParsed,
 		})
