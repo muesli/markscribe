@@ -211,6 +211,18 @@ This function requires GoodReads API key!
 
 This function requires GoodReads API key!
 
+
+### Your Literal.club currently reading books
+
+```
+{{range literalClubCurrentlyReading 5}}
+- {{.Book.Title}} - {{.Book.Subtitle}} - {{.Book.Description}} - https://literal.club/_YOUR_USERNAME_/book/{{.Book.Slug}}
+  {{- range .Book.Authors }}{{ .Name }}{{ end }}
+{{- end}}
+```
+
+This function requires a `LITERAL_EMAIL` and `LITERAL_PASSWORD`.
+
 ## Template Engine
 
 markscribe uses Go's powerful template engine. You can find its documentation
@@ -250,8 +262,8 @@ You also need to set your GoodReads user ID in your secrets as `GOODREADS_USER_I
 
 ## FAQ
 
-Q: That's awesome, but can you expose more APIs and data?  
+Q: That's awesome, but can you expose more APIs and data?
 A: Of course, just open a new issue and let me know what you'd like to do with markscribe!
 
-Q: That's awesome, but I don't have my own server to run this on. Can you help?  
+Q: That's awesome, but I don't have my own server to run this on. Can you help?
 A: Check out [readme-scribe](https://github.com/muesli/readme-scribe/), a GitHub Action that runs markscribe for you!
