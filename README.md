@@ -216,8 +216,8 @@ This function requires GoodReads API key!
 
 ```
 {{range literalClubCurrentlyReading 5}}
-- {{.Book.Title}} - {{.Book.Subtitle}} - {{.Book.Description}} - https://literal.club/_YOUR_USERNAME_/book/{{.Book.Slug}}
-  {{- range .Book.Authors }}{{ .Name }}{{ end }}
+- {{.Title}} - {{.Subtitle}} - {{.Description}} - https://literal.club/_YOUR_USERNAME_/book/{{.Slug}}
+  {{- range .Authors }}{{ .Name }}{{ end }}
 {{- end}}
 ```
 
