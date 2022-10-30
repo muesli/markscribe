@@ -149,6 +149,7 @@ func recentRepos(count int) []Repo {
 		"username": githubv4.String(username),
 		"count":    githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
 		"isFork":   githubv4.Boolean(false),
+		"isArchived":   githubv4.Boolean(false),
 	}
 	err := gitHubClient.Query(context.Background(), &recentReposQuery, variables)
 	if err != nil {
@@ -304,7 +305,7 @@ func recentReleases(count int) []Repo {
 {
   user(login: "muesli") {
     login
-    repositories(first: 10, privacy: PUBLIC, isFork: false, ownerAffiliations: OWNER, orderBy: {field: CREATED_AT, direction: DESC}) {
+    repositories(first: 10, privacy: PUBLIC, isFork: false, isArchived: false, ownerAffiliations: OWNER, orderBy: {field: CREATED_AT, direction: DESC}) {
       totalCount
       edges {
         cursor
