@@ -120,6 +120,23 @@ Stars: {{.Stargazers}}
 This function requires GitHub authentication with the following API scopes:
 `repo:status`, `public_repo`, `read:user`.
 
+### Custom GitHub repository
+
+```
+{{with repo "muesli" "markscribe"}}
+Name: {{.Name}}
+Description: {{.Description}}
+URL: {{.URL}}
+Stars: {{.Stargazers}}
+Is Private: {{.IsPrivate}}
+Last Git Tag: {{.LastRelease.TagName}}
+Last Release: {{humanize .LastRelease.PublishedAt}}
+{{end}}
+```
+
+This function requires GitHub authentication with the following API scopes:
+`repo:status`, `public_repo`, `read:user`.
+
 ### Forks you recently created
 
 ```
@@ -210,7 +227,6 @@ This function requires GoodReads API key!
 ```
 
 This function requires GoodReads API key!
-
 
 ### Your Literal.club currently reading books
 

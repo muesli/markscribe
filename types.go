@@ -48,6 +48,7 @@ type Repo struct {
 	Name        string
 	URL         string
 	Description string
+	IsPrivate   bool
 	Stargazers  int
 	LastRelease Release
 }
@@ -143,6 +144,7 @@ func repoFromQL(repo qlRepository) Repo {
 		URL:         string(repo.URL),
 		Description: string(repo.Description),
 		Stargazers:  int(repo.Stargazers.TotalCount),
+		IsPrivate:   bool(repo.IsPrivate),
 	}
 }
 
