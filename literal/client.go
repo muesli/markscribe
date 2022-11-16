@@ -9,6 +9,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
+// Auth is the authentication information for the literal.club API.
 type Auth struct {
 	Email    string `env:"LITERAL_EMAIL"`
 	Password string `env:"LITERAL_PASSWORD"`
@@ -38,6 +39,7 @@ func login() (*graphql.Client, error) {
 	return graphql.NewClient(literalURL, cli), nil
 }
 
+// CurrentlyReading retrieves the currently reading list.
 func CurrentlyReading() ([]Book, error) {
 	client, err := login()
 	if err != nil {
@@ -60,6 +62,7 @@ func CurrentlyReading() ([]Book, error) {
 	return books, nil
 }
 
+// Book is a book.
 type Book struct {
 	Slug        graphql.String
 	Title       graphql.String
@@ -68,6 +71,7 @@ type Book struct {
 	Authors     []Author
 }
 
+// Author is an author.
 type Author struct {
 	Name graphql.String
 }
