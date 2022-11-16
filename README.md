@@ -34,7 +34,7 @@ packages.
 ### Build From Source
 
 Alternatively you can also build `markscribe` from source. Make sure you have a
-working Go environment (Go 1.11 or higher is required). See the
+working Go environment (Go 1.16 or higher is required). See the
 [install instructions](https://golang.org/doc/install.html).
 
 To install markscribe, simply run:
