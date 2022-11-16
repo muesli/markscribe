@@ -9,6 +9,7 @@ import (
 // RSSEntry represents a single RSS entry.
 type RSSEntry struct {
 	Title       string
+	Description string
 	URL         string
 	PublishedAt time.Time
 }
