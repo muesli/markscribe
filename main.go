@@ -55,6 +55,8 @@ func main() {
 		/* GoodReads */
 		"goodReadsReviews":          goodReadsReviews,
 		"goodReadsCurrentlyReading": goodReadsCurrentlyReading,
+		/* Literal.club */
+		"literalClubCurrentlyReading": literalClubCurrentlyReading,
 		/* Utils */
 		"humanize": humanized,
 		"reverse":  reverse,

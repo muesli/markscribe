@@ -211,6 +211,18 @@ This function requires GoodReads API key!
 
 This function requires GoodReads API key!
 
+
+### Your Literal.club currently reading books
+
+```
+{{range literalClubCurrentlyReading 5}}
+- {{.Title}} - {{.Subtitle}} - {{.Description}} - https://literal.club/_YOUR_USERNAME_/book/{{.Slug}}
+  {{- range .Authors }}{{ .Name }}{{ end }}
+{{- end}}
+```
+
+This function requires a `LITERAL_EMAIL` and `LITERAL_PASSWORD`.
+
 ## Template Engine
 
 markscribe uses Go's powerful template engine. You can find its documentation
