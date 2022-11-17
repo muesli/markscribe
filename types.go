@@ -97,6 +97,7 @@ type qlRepository struct {
 	URL           githubv4.String
 	Description   githubv4.String
 	IsPrivate     githubv4.Boolean
+	IsArchived    githubv4.Boolean
 	Stargazers    struct {
 		TotalCount githubv4.Int
 	}
