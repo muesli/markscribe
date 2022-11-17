@@ -160,7 +160,7 @@ func recentRepos(count int) []Repo {
 		if string(v.Node.NameWithOwner) == fmt.Sprintf("%s/%s", username, username) {
 			continue
 		}
-		
+
 		// ignore archived
 		if v.Node.IsArchived {
 			continue
