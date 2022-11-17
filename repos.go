@@ -49,7 +49,7 @@ var recentReposQuery struct {
 				Cursor githubv4.String
 				Node   qlRepository
 			}
-		} `graphql:"repositories(first: $count, privacy: PUBLIC, isFork: $isFork, ownerAffiliations: OWNER, orderBy: {field: CREATED_AT, direction: DESC})"`
+		} `graphql:"repositories(first: $count, privacy: PUBLIC, isFork: $isFork, isArchived: $isArchived, ownerAffiliations: OWNER, orderBy: {field: CREATED_AT, direction: DESC})"`
 	} `graphql:"user(login:$username)"`
 }
 
