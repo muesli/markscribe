@@ -161,7 +161,7 @@ func recentRepos(count int) []Repo {
 			continue
 		}
 		
-		// ignore archived repos
+		// ignore archived
 		if v.Node.IsArchived {
 			continue
 		}
