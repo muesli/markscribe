@@ -16,26 +16,41 @@ var recentStarsQuery struct {
 				StarredAt githubv4.DateTime
 				Node      qlRepository
 			}
-		} `graphql:"starredRepositories(first: $count, orderBy: {field: STARRED_AT, direction: DESC})"`
+		} `graphql:"starredRepositories(first: $count, after:$after, orderBy: {field: STARRED_AT, direction: DESC})"`
 	} `graphql:"user(login:$username)"`
 }
 
 func recentStars(count int) []Star {
 	var starredRepos []Star
-	variables := map[string]interface{}{
-		"username": githubv4.String(username),
-		"count":    githubv4.Int(count),
-	}
-	err := gitHubClient.Query(context.Background(), &recentStarsQuery, variables)
-	if err != nil {
-		panic(err)
-	}
+	var after *githubv4.String
 
-	for _, v := range recentStarsQuery.User.Stars.Edges {
-		starredRepos = append(starredRepos, Star{
-			StarredAt: v.StarredAt.Time,
-			Repo:      repoFromQL(v.Node),
-		})
+	for {
+		if len(starredRepos) >= count {
+			break
+		}
+		variables := map[string]interface{}{
+			"username": githubv4.String(username),
+			"count":    githubv4.Int(count),
+			"after":    after,
+		}
+		err := gitHubClient.Query(context.Background(), &recentStarsQuery, variables)
+		if err != nil {
+			panic(err)
+		}
+
+		for _, v := range recentStarsQuery.User.Stars.Edges {
+			if v.Node.IsPrivate {
+				continue
+			}
+			if len(starredRepos) >= count {
+				break
+			}
+			starredRepos = append(starredRepos, Star{
+				StarredAt: v.StarredAt.Time,
+				Repo:      repoFromQL(v.Node),
+			})
+			after = githubv4.NewString(v.Cursor)
+		}
 	}
 
 	return starredRepos
