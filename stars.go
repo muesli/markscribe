@@ -24,10 +24,8 @@ func recentStars(count int) []Star {
 	var starredRepos []Star
 	var after *githubv4.String
 
+outer:
 	for {
-		if len(starredRepos) >= count {
-			break
-		}
 		variables := map[string]interface{}{
 			"username": githubv4.String(username),
 			"count":    githubv4.Int(count),
@@ -42,13 +40,13 @@ func recentStars(count int) []Star {
 			if v.Node.IsPrivate {
 				continue
 			}
-			if len(starredRepos) >= count {
-				break
-			}
 			starredRepos = append(starredRepos, Star{
 				StarredAt: v.StarredAt.Time,
 				Repo:      repoFromQL(v.Node),
 			})
+			if len(starredRepos) >= count {
+				break outer
+			}
 			after = githubv4.NewString(v.Cursor)
 		}
 	}
