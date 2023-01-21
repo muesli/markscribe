@@ -64,6 +64,7 @@ func main() {
 		"now":      time.Now,
 		"contains": strings.Contains,
 		"toLower":  strings.ToLower,
+		"comment":  comment,
 	}).Parse(string(tplIn))
 	if err != nil {
 		fmt.Println("Can't parse template:", err)
