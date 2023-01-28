@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/KyleBanks/goodreads"
+	"github.com/shkh/lastfm-go/lastfm"
 	"github.com/shurcooL/githubv4"
 	"golang.org/x/oauth2"
 )
@@ -21,6 +22,11 @@ var (
 	goodReadsClient *goodreads.Client
 	goodReadsID     string
 	username        string
+
+	lastfmapi    *lastfm.Api
+	lastFMUser   string
+	lastFMApiKey string
+	lastFMSecret string
 
 	write = flag.String("write", "", "write output to")
 )
@@ -64,6 +70,11 @@ func main() {
 		"now":      time.Now,
 		"contains": strings.Contains,
 		"toLower":  strings.ToLower,
+		/* LastFm* */
+		"lastFmFavouriteAlbums":  lastFmFavouriteAlbums,
+		"lastFmFavouriteTracks":  lastFmFavouriteTracks,
+		"lastFmFavouriteArtists": lastFmFavouriteArtists,
+		"lastFmRecentTracks":     lastFmRecentTracks,
 	}).Parse(string(tplIn))
 	if err != nil {
 		fmt.Println("Can't parse template:", err)
@@ -90,6 +101,12 @@ func main() {
 			os.Exit(1)
 		}
 	}
+
+	lastFMUser = os.Getenv("LASTFM_USER")
+	lastFMApiKey = os.Getenv("LASTFM_API_KEY")
+	lastFMSecret = os.Getenv("LASTFM_API_SECRET")
+
+	lastfmapi = lastfm.New(lastFMApiKey, lastFMSecret)
 
 	w := os.Stdout
 	if len(*write) > 0 {
