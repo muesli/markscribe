@@ -23,10 +23,10 @@ var (
 	goodReadsID     string
 	username        string
 
-	lastfmapi    *lastfm.Api
-	lastFMUser   string
-	lastFMApiKey string
-	lastFMSecret string
+	lastfmApi    *lastfm.Api
+	lastfmUser   string
+	lastfmApiKey string
+	lastfmSecret string
 
 	write = flag.String("write", "", "write output to")
 )
@@ -70,11 +70,11 @@ func main() {
 		"now":      time.Now,
 		"contains": strings.Contains,
 		"toLower":  strings.ToLower,
-		/* LastFm* */
-		"lastFmFavouriteAlbums":  lastFmFavouriteAlbums,
-		"lastFmFavouriteTracks":  lastFmFavouriteTracks,
-		"lastFmFavouriteArtists": lastFmFavouriteArtists,
-		"lastFmRecentTracks":     lastFmRecentTracks,
+		/* last.fm* */
+		"lastfmFavouriteAlbums":  lastfmFavouriteAlbums,
+		"lastfmFavouriteTracks":  lastfmFavouriteTracks,
+		"lastfmFavouriteArtists": lastfmFavouriteArtists,
+		"lastfmRecentTracks":     lastfmRecentTracks,
 	}).Parse(string(tplIn))
 	if err != nil {
 		fmt.Println("Can't parse template:", err)
@@ -102,11 +102,11 @@ func main() {
 		}
 	}
 
-	lastFMUser = os.Getenv("LASTFM_USER")
-	lastFMApiKey = os.Getenv("LASTFM_API_KEY")
-	lastFMSecret = os.Getenv("LASTFM_API_SECRET")
+	lastfmUser = os.Getenv("LASTFM_USER")
+	lastfmApiKey = os.Getenv("LASTFM_API_KEY")
+	lastfmSecret = os.Getenv("LASTFM_API_SECRET")
 
-	lastfmapi = lastfm.New(lastFMApiKey, lastFMSecret)
+	lastfmApi = lastfm.New(lastfmApiKey, lastfmSecret)
 
 	w := os.Stdout
 	if len(*write) > 0 {

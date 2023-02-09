@@ -239,6 +239,39 @@ This function requires GoodReads API key!
 
 This function requires a `LITERAL_EMAIL` and `LITERAL_PASSWORD`.
 
+### Favourite albums of all time 🎶
+
+{{range lastFmFavouriteAlbums 5}}
+- {{.Artist.Name}} - {{.Name}}
+{{- end}}
+
+This function requires last.fm User, API Key, and API Secret!
+
+
+### Favourite artists of all time 👨‍🎤
+
+{{range lastFmFavouriteArtists 5}}
+- {{.Name}} ({{.PlayCount}})
+{{- end}}
+
+This function requires last.fm User, API Key, and API Secret!
+
+### Favourite tracks of all time 💿
+
+{{range lastFmFavouriteTracks 5}}
+- {{.Artist.Name}} - {{.Name}} ({{.PlayCount}})
+{{- end}}
+
+This function requires last.fm User, API Key, and API Secret!
+
+### Most recent tracks 🎺
+
+{{range lastfmRecentTracks 10}}
+- {{.Artist.Name}} - {{.Name}}
+{{- end}}
+
+This function requires last.fm User, API Key, and API Secret!
+
 ## Template Engine
 
 markscribe uses Go's powerful template engine. You can find its documentation
