@@ -4,11 +4,11 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
+	"text/template"
 	"time"
 
 	"github.com/KyleBanks/goodreads"
