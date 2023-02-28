@@ -61,3 +61,5 @@ Say Hello, I don't bite!
 - Blog: https://...
 
 Want your own self-generating profile page? Check out [readme-scribe](https://github.com/muesli/readme-scribe)!
+
+<!-- comments will be preserved -->
