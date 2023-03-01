@@ -25,7 +25,7 @@ var (
 	goodReadsID  string
 	username     string
 	lastfmUser   string
-	lastfmApiKey string
+	lastfmAPIKey string
 	lastfmSecret string
 
 	write = flag.String("write", "", "write output to")
@@ -85,7 +85,7 @@ func main() {
 	goodReadsToken := os.Getenv("GOODREADS_TOKEN")
 	goodReadsID = os.Getenv("GOODREADS_USER_ID")
 	lastfmUser = os.Getenv("LASTFM_USER")
-	lastfmApiKey = os.Getenv("LASTFM_API_KEY")
+	lastfmAPIKey = os.Getenv("LASTFM_API_KEY")
 	lastfmSecret = os.Getenv("LASTFM_API_SECRET")
 
 	var httpClient *http.Client
@@ -97,7 +97,7 @@ func main() {
 
 	gitHubClient = githubv4.NewClient(httpClient)
 	goodReadsClient = goodreads.NewClient(goodReadsToken)
-	lastfmClient = lastfm.New(lastfmApiKey, lastfmSecret)
+	lastfmClient = lastfm.New(lastfmAPIKey, lastfmSecret)
 
 	if len(gitHubToken) > 0 {
 		username, err = getUsername()
