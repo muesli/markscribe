@@ -5,12 +5,11 @@ import (
 )
 
 func lastfmFavouriteAlbums(count int) interface{} {
-
 	params := lastfm.P{
 		"user":  lastfmUser,
 		"limit": count,
 	}
-	albums, err := lastfmApi.User.GetTopAlbums(params)
+	albums, err := lastfmClient.User.GetTopAlbums(params)
 	if err != nil {
 		panic(err)
 	}
@@ -22,7 +21,7 @@ func lastfmFavouriteTracks(count int) interface{} {
 		"user":  lastfmUser,
 		"limit": count,
 	}
-	tracks, err := lastfmApi.User.GetTopTracks(params)
+	tracks, err := lastfmClient.User.GetTopTracks(params)
 	if err != nil {
 		panic(err)
 	}
@@ -34,7 +33,7 @@ func lastfmFavouriteArtists(count int) interface{} {
 		"user":  lastfmUser,
 		"limit": count,
 	}
-	artists, err := lastfmApi.User.GetTopArtists(params)
+	artists, err := lastfmClient.User.GetTopArtists(params)
 	if err != nil {
 		panic(err)
 	}
@@ -46,7 +45,7 @@ func lastfmRecentTracks(count int) interface{} {
 		"user":  lastfmUser,
 		"limit": count,
 	}
-	tracks, err := lastfmApi.User.GetRecentTracks(params)
+	tracks, err := lastfmClient.User.GetRecentTracks(params)
 	if err != nil {
 		panic(err)
 	}

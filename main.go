@@ -20,10 +20,10 @@ import (
 var (
 	gitHubClient    *githubv4.Client
 	goodReadsClient *goodreads.Client
-	goodReadsID     string
-	username        string
+	lastfmClient    *lastfm.Api
 
-	lastfmApi    *lastfm.Api
+	goodReadsID  string
+	username     string
 	lastfmUser   string
 	lastfmApiKey string
 	lastfmSecret string
@@ -64,27 +64,31 @@ func main() {
 		"goodReadsCurrentlyReading": goodReadsCurrentlyReading,
 		/* Literal.club */
 		"literalClubCurrentlyReading": literalClubCurrentlyReading,
+		/* last.fm */
+		"lastfmFavouriteAlbums":  lastfmFavouriteAlbums,
+		"lastfmFavouriteTracks":  lastfmFavouriteTracks,
+		"lastfmFavouriteArtists": lastfmFavouriteArtists,
+		"lastfmRecentTracks":     lastfmRecentTracks,
 		/* Utils */
 		"humanize": humanized,
 		"reverse":  reverse,
 		"now":      time.Now,
 		"contains": strings.Contains,
 		"toLower":  strings.ToLower,
-		/* last.fm* */
-		"lastfmFavouriteAlbums":  lastfmFavouriteAlbums,
-		"lastfmFavouriteTracks":  lastfmFavouriteTracks,
-		"lastfmFavouriteArtists": lastfmFavouriteArtists,
-		"lastfmRecentTracks":     lastfmRecentTracks,
 	}).Parse(string(tplIn))
 	if err != nil {
 		fmt.Println("Can't parse template:", err)
 		os.Exit(1)
 	}
 
-	var httpClient *http.Client
 	gitHubToken := os.Getenv("GITHUB_TOKEN")
 	goodReadsToken := os.Getenv("GOODREADS_TOKEN")
 	goodReadsID = os.Getenv("GOODREADS_USER_ID")
+	lastfmUser = os.Getenv("LASTFM_USER")
+	lastfmApiKey = os.Getenv("LASTFM_API_KEY")
+	lastfmSecret = os.Getenv("LASTFM_API_SECRET")
+
+	var httpClient *http.Client
 	if len(gitHubToken) > 0 {
 		httpClient = oauth2.NewClient(context.Background(), oauth2.StaticTokenSource(
 			&oauth2.Token{AccessToken: gitHubToken},
@@ -93,6 +97,7 @@ func main() {
 
 	gitHubClient = githubv4.NewClient(httpClient)
 	goodReadsClient = goodreads.NewClient(goodReadsToken)
+	lastfmClient = lastfm.New(lastfmApiKey, lastfmSecret)
 
 	if len(gitHubToken) > 0 {
 		username, err = getUsername()
@@ -101,12 +106,6 @@ func main() {
 			os.Exit(1)
 		}
 	}
-
-	lastfmUser = os.Getenv("LASTFM_USER")
-	lastfmApiKey = os.Getenv("LASTFM_API_KEY")
-	lastfmSecret = os.Getenv("LASTFM_API_SECRET")
-
-	lastfmApi = lastfm.New(lastfmApiKey, lastfmSecret)
 
 	w := os.Stdout
 	if len(*write) > 0 {
