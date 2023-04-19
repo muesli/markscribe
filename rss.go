@@ -9,6 +9,7 @@ import (
 // RSSEntry represents a single RSS entry.
 type RSSEntry struct {
 	Title       string
+	Description string
 	URL         string
 	PublishedAt time.Time
 }
@@ -27,6 +28,7 @@ func rssFeed(url string, count int) []RSSEntry {
 
 		r = append(r, RSSEntry{
 			Title:       v.Title,
+			Description: v.Description,
 			URL:         v.Link,
 			PublishedAt: *v.PublishedParsed,
 		})
