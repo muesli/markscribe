@@ -174,6 +174,11 @@ func recentRepos(count int) []Repo {
 			continue
 		}
 
+		// ignore archived
+		if v.Node.IsArchived {
+			continue
+		}
+
 		repos = append(repos, repoFromQL(v.Node))
 		if len(repos) == count {
 			break
