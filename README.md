@@ -260,6 +260,12 @@ To reverse the order of a slice, call `reverse`:
 {{reverse (rss "https://domain.tld/feed.xml" 5)}}
 ```
 
+To truncate string, call `truncate`:
+
+```
+{{truncate "Long text created by Khaled Alam for testing truncate function" 50 ".."}}
+```
+
 ## GitHub Authentication
 
 In order to access some of GitHub's API, markscribe requires you to provide a
