@@ -33,10 +33,6 @@ func reverse(s interface{}) interface{} {
 }
 
 func truncate(s interface{}, max int, suffix string) string {
-	if suffix == "" {
-		suffix = "..."
-	}
-
 	n := reflect.ValueOf(s).Len()
 	if max < 1 || max >= n {
 		return fmt.Sprintf("%v", s)
