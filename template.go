@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"time"
-
+	
 	"github.com/dustin/go-humanize"
 )
 
@@ -32,4 +32,13 @@ func reverse(s interface{}) interface{} {
 	}
 
 	return s
+}
+
+func truncate(s interface{}, max int, suffix string) string {
+	n := reflect.ValueOf(s).Len()
+	if max < 1 || max >= n {
+		return fmt.Sprintf("%v", s)
+	}
+
+	return fmt.Sprintf("%v", s)[:max] + suffix
 }
