@@ -11,6 +11,7 @@ type RSSEntry struct {
 	Title       string
 	URL         string
 	PublishedAt time.Time
+	GUID        string
 }
 
 func rssFeed(url string, count int) []RSSEntry {
@@ -29,6 +30,7 @@ func rssFeed(url string, count int) []RSSEntry {
 			Title:       v.Title,
 			URL:         v.Link,
 			PublishedAt: *v.PublishedParsed,
+			GUID:        v.GUID,
 		})
 		if len(r) == count {
 			break
