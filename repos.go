@@ -69,6 +69,12 @@ var recentReleasesQuery struct {
 	} `graphql:"user(login:$username)"`
 }
 
+var repoRecentReleasesQuery struct {
+	Repository struct {
+		Releases qlRelease `graphql:"releases(first: 10, orderBy: {field: CREATED_AT, direction: DESC})"`
+	} `graphql:"repository(name: $name, owner: $owner)"`
+}
+
 var repoQuery struct {
 	Repository struct {
 		Description   githubv4.String
@@ -212,6 +218,72 @@ func recentForks(count int) []Repo {
 
 	// fmt.Printf("Found %d repos!\n", len(repos))
 	return repos
+}
+
+func repoRecentPreReleases(owner, name string, count int) []Release {
+	var releases []Release
+
+	variables := map[string]interface{}{
+		"owner": githubv4.String(owner),
+		"name":  githubv4.String(name),
+	}
+	err := gitHubClient.Query(context.Background(), &repoRecentReleasesQuery, variables)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, rel := range repoRecentReleasesQuery.Repository.Releases.Nodes {
+		if !bool(rel.IsPrerelease) {
+			continue
+		}
+		releases = append(releases, Release{
+			Name:         string(rel.Name),
+			TagName:      string(rel.TagName),
+			PublishedAt:  rel.PublishedAt.Time,
+			CreatedAt:    rel.CreatedAt.Time,
+			URL:          string(rel.URL),
+			IsLatest:     bool(rel.IsLatest),
+			IsPreRelease: bool(rel.IsPrerelease),
+		})
+	}
+
+	if len(releases) > count {
+		return releases[:count]
+	}
+	return releases
+}
+
+func repoRecentReleases(owner, name string, count int) []Release {
+	var releases []Release
+
+	variables := map[string]interface{}{
+		"owner": githubv4.String(owner),
+		"name":  githubv4.String(name),
+	}
+	err := gitHubClient.Query(context.Background(), &repoRecentReleasesQuery, variables)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, rel := range repoRecentReleasesQuery.Repository.Releases.Nodes {
+		if bool(rel.IsPrerelease) {
+			continue
+		}
+		releases = append(releases, Release{
+			Name:         string(rel.Name),
+			TagName:      string(rel.TagName),
+			PublishedAt:  rel.PublishedAt.Time,
+			CreatedAt:    rel.CreatedAt.Time,
+			URL:          string(rel.URL),
+			IsLatest:     bool(rel.IsLatest),
+			IsPreRelease: bool(rel.IsPrerelease),
+		})
+	}
+
+	if len(releases) > count {
+		return releases[:count]
+	}
+	return releases
 }
 
 func recentReleases(count int) []Repo {
