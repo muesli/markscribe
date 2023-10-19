@@ -39,7 +39,7 @@ working Go environment (Go 1.16 or higher is required). See the
 
 To install markscribe, simply run:
 
-    go get github.com/muesli/markscribe
+    go install github.com/muesli/markscribe@latest
 
 ## Templates
 
