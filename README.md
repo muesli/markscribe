@@ -246,18 +246,12 @@ here: https://golang.org/pkg/text/template/
 
 ## Template Helpers
 
-markscribe comes with a few handy template helpers:
+markscribe comes with a [sprout](https://docs.atom.codes/sprout) and a few more template helpers:
 
 To format timestamps, call `humanize`:
 
 ```
 {{humanize .Timestamp}}
-```
-
-To reverse the order of a slice, call `reverse`:
-
-```
-{{reverse (rss "https://domain.tld/feed.xml" 5)}}
 ```
 
 ## GitHub Authentication

@@ -7,11 +7,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"strings"
 	"text/template"
-	"time"
 
 	"github.com/KyleBanks/goodreads"
+	"github.com/go-sprout/sprout"
 	"github.com/shurcooL/githubv4"
 	"golang.org/x/oauth2"
 )
@@ -39,32 +38,29 @@ func main() {
 		os.Exit(1)
 	}
 
-	tpl, err := template.New("tpl").Funcs(template.FuncMap{
-		/* GitHub */
-		"recentContributions": recentContributions,
-		"recentPullRequests":  recentPullRequests,
-		"recentRepos":         recentRepos,
-		"recentForks":         recentForks,
-		"recentReleases":      recentReleases,
-		"followers":           recentFollowers,
-		"recentStars":         recentStars,
-		"gists":               gists,
-		"sponsors":            sponsors,
-		"repo":                repo,
-		/* RSS */
-		"rss": rssFeed,
-		/* GoodReads */
-		"goodReadsReviews":          goodReadsReviews,
-		"goodReadsCurrentlyReading": goodReadsCurrentlyReading,
-		/* Literal.club */
-		"literalClubCurrentlyReading": literalClubCurrentlyReading,
-		/* Utils */
-		"humanize": humanized,
-		"reverse":  reverse,
-		"now":      time.Now,
-		"contains": strings.Contains,
-		"toLower":  strings.ToLower,
-	}).Parse(string(tplIn))
+	funcMap := sprout.FuncMap(sprout.WithAlias("lower", "toLower"))
+	/* Github */
+	funcMap["recentContributions"] = recentContributions
+	funcMap["recentPullRequests"] = recentPullRequests
+	funcMap["recentRepos"] = recentRepos
+	funcMap["recentForks"] = recentForks
+	funcMap["recentReleases"] = recentReleases
+	funcMap["followers"] = recentFollowers
+	funcMap["recentStars"] = recentStars
+	funcMap["gists"] = gists
+	funcMap["sponsors"] = sponsors
+	funcMap["repo"] = repo
+	/* RSS */
+	funcMap["rss"] = rssFeed
+	/* GoodReads */
+	funcMap["goodReadsReviews"] = goodReadsReviews
+	funcMap["goodReadsCurrentlyReading"] = goodReadsCurrentlyReading
+	/* Literal.club */
+	funcMap["literalClubCurrentlyReading"] = literalClubCurrentlyReading
+	/* Utils */
+	funcMap["humanize"] = humanized
+
+	tpl, err := template.New("tpl").Funcs(funcMap).Parse(string(tplIn))
 	if err != nil {
 		fmt.Println("Can't parse template:", err)
 		os.Exit(1)
