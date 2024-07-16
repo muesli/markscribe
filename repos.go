@@ -307,7 +307,7 @@ func orgRecentPushes(owner string, count int) []Repo {
 				Edges []struct {
 					Node qlRepository
 				}
-			} `graphql:"repositories(first: $count, privacy: PUBLIC, orderBy: {field: STARGAZERS, direction: DESC})"`
+			} `graphql:"repositories(first: $count, privacy: PUBLIC, orderBy: {field: PUSHED_AT, direction: DESC})"`
 		} `graphql:"organization(login: $owner)"`
 	}
 	fmt.Printf("Finding repos with recent pushes in the %s org\n", owner)
