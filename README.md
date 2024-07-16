@@ -165,6 +165,23 @@ Published: {{humanize .LastRelease.PublishedAt}}
 This function requires GitHub authentication with the following API scopes:
 `repo:status`, `public_repo`, `read:user`.
 
+### Recent pushes in an organization
+
+```
+{{range orgRecentPushes "charmbracelet" 10}}
+Name: {{.Name}}
+URL: {{.URL}}
+Description: {{.Description}}
+Stars: {{.Stargazers}}
+{{end}}
+```
+
+This function requires GitHub authentication with the following API scopes:
+`public_repo`, `read:org`.
+
+> [!TIP]
+> Use `{{with repo "charmbracelet .Name"}}` to create a pipeline that grabs additional information about the repo including releases.
+
 ### Your published gists
 
 ```

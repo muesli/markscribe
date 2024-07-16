@@ -276,6 +276,62 @@ func recentReleases(count int) []Repo {
 	return repos
 }
 
+/*{
+*  organization(login: "charmbracelet") {
+*    login
+*    repositories(
+*      first: 5
+*      privacy: PUBLIC
+*      orderBy: {field: PUSHED_AT, direction: DESC}
+*    ) {
+*      totalCount
+*      edges {
+*        cursor
+*        node {
+*          nameWithOwner
+*          pushedAt
+*          latestRelease {
+*            tagName
+*            createdAt
+*          }
+*        }
+*      }
+*    }
+*  }
+*}
+ * */
+func orgRecentPushes(owner string, count int) []Repo {
+	var query struct {
+		Organization struct {
+			Repositories struct {
+				Edges []struct {
+					Node qlRepository
+				}
+			} `graphql:"repositories(first: $count, privacy: PUBLIC, orderBy: {field: STARGAZERS, direction: DESC})"`
+		} `graphql:"organization(login: $owner)"`
+	}
+	fmt.Printf("Finding repos with recent pushes in the %s org\n", owner)
+	var repos []Repo
+	variables := map[string]interface{}{
+		"count": githubv4.Int(count),
+		"owner": githubv4.String(owner),
+	}
+	err := gitHubClient.Query(context.Background(), &query, variables)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, v := range query.Organization.Repositories.Edges {
+		// ignore meta-repo
+		repos = append(repos, repoFromQL(v.Node))
+		if len(repos) == count {
+			break
+		}
+	}
+	fmt.Printf("Found %d repos!\n", len(repos))
+	return repos
+}
+
 func repo(owner, name string) Repo {
 	variables := map[string]interface{}{
 		"owner": githubv4.String(owner),
