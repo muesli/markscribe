@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
@@ -33,7 +32,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	tplIn, err := ioutil.ReadFile(flag.Args()[0])
+	tplIn, err := os.ReadFile(flag.Args()[0])
 	if err != nil {
 		fmt.Println("Can't read file:", err)
 		os.Exit(1)
