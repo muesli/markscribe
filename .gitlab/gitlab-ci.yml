@@ -1,0 +1,13 @@
+stages:
+  - lint
+  - test
+  - build
+  - release
+
+
+include:
+  - local: .gitlab/ci/lint.yml
+  - local: .gitlab/ci/test.yml
+  - local: .gitlab/ci/build.yml
+  - local: .gitlab/ci/create_release.yml
+  - local: .gitlab/ci/create_docker_release.yml

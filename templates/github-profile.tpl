@@ -25,6 +25,11 @@
 - [{{.Title}}]({{.URL}}) on [{{.Repo.Name}}]({{.Repo.URL}}) ({{humanize .CreatedAt}})
 {{- end}}
 
+#### 🔨 My recent Issues
+{{range recentIssues 10}}
+- [{{.Repo.Name}}]({{.Repo.URL}}) - {{.Title}} ({{humanize .OccurredAt}})
+{{- end}}
+
 #### 📜 My recent blog posts
 {{range rss "https://.../posts/index.xml" 5}}
 - [{{.Title}}]({{.URL}}) ({{humanize .PublishedAt}})

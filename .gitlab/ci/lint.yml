@@ -1,0 +1,18 @@
+linting:
+  variables:
+    GOLANGCI_LINT_VERSION: '2.7.1'
+  image: ${GITLAB_DEPENDENCY_PROXY}golangci/golangci-lint:v${GOLANGCI_LINT_VERSION}
+  tags: [docker]
+  stage: lint
+  before_script:
+    - go mod tidy
+  script:
+    - golangci-lint run
+      --output.code-climate.path gl-code-quality-report.json
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+    paths:
+      - gl-code-quality-report.json
+    when: always
+  allow_failure: false
