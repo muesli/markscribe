@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"sort"
+	"strings"
+	"time"
 
 	"github.com/shurcooL/githubv4"
 )
@@ -23,7 +25,7 @@ var recentContributionsQuery struct {
 				} `graphql:"contributions(first: 1)"`
 				Repository qlRepository
 			} `graphql:"commitContributionsByRepository(maxRepositories: 100)"`
-		}
+		} `graphql:"contributionsCollection(from: $from, to: $to)"`
 	} `graphql:"user(login:$username)"`
 }
 
@@ -53,20 +55,11 @@ var recentReposQuery struct {
 	} `graphql:"user(login:$username)"`
 }
 
-var recentReleasesQuery struct {
-	User struct {
-		Login                     githubv4.String
-		RepositoriesContributedTo struct {
-			TotalCount githubv4.Int
-			Edges      []struct {
-				Cursor githubv4.String
-				Node   struct {
-					qlRepository
-					Releases qlRelease `graphql:"releases(first: 10, orderBy: {field: CREATED_AT, direction: DESC})"`
-				}
-			}
-		} `graphql:"repositoriesContributedTo(first: 100, after:$after includeUserRepositories: true, contributionTypes: COMMIT, privacy: PUBLIC)"`
-	} `graphql:"user(login:$username)"`
+var repoReleasesQuery struct {
+	Repository struct {
+		qlRepository
+		Releases qlRelease `graphql:"releases(first: 10, orderBy: {field: CREATED_AT, direction: DESC})"`
+	} `graphql:"repository(owner:$owner, name:$name)"`
 }
 
 var repoQuery struct {
@@ -82,19 +75,63 @@ var repoQuery struct {
 	} `graphql:"repository(owner:$owner, name:$name)"`
 }
 
+type repoContribution struct {
+	Repository qlRepository
+	OccurredAt time.Time
+}
+
+// contributedRepos returns the repositories the user committed to over the
+// past year, most recent contribution first. The GitHub GraphQL API enforces
+// a resource limit on contributionsCollection that the default one-year
+// window can exceed, so query in six-month windows and merge the results.
+func contributedRepos() []repoContribution {
+	var contributions []repoContribution
+	latestByRepo := make(map[string]int)
+	now := time.Now()
+	for _, monthsAgo := range []int{6, 12} {
+		variables := map[string]interface{}{
+			"username": githubv4.String(username),
+			"from":     githubv4.DateTime{Time: now.AddDate(0, -monthsAgo, 0)},
+			"to":       githubv4.DateTime{Time: now.AddDate(0, -monthsAgo+6, 0)},
+		}
+		err := gitHubClient.Query(context.Background(), &recentContributionsQuery, variables)
+		if err != nil {
+			panic(err)
+		}
+
+		for _, v := range recentContributionsQuery.User.ContributionsCollection.CommitContributionsByRepository {
+			if len(v.Contributions.Edges) == 0 {
+				continue
+			}
+
+			c := repoContribution{
+				Repository: v.Repository,
+				OccurredAt: v.Contributions.Edges[0].Node.OccurredAt.Time,
+			}
+
+			if i, ok := latestByRepo[string(c.Repository.NameWithOwner)]; ok {
+				if c.OccurredAt.After(contributions[i].OccurredAt) {
+					contributions[i] = c
+				}
+				continue
+			}
+			latestByRepo[string(c.Repository.NameWithOwner)] = len(contributions)
+			contributions = append(contributions, c)
+		}
+	}
+
+	sort.Slice(contributions, func(i, j int) bool {
+		return contributions[i].OccurredAt.After(contributions[j].OccurredAt)
+	})
+
+	return contributions
+}
+
 func recentContributions(count int) []Contribution {
 	// fmt.Printf("Finding recent contributions...\n")
 
 	var contributions []Contribution
-	variables := map[string]interface{}{
-		"username": githubv4.String(username),
-	}
-	err := gitHubClient.Query(context.Background(), &recentContributionsQuery, variables)
-	if err != nil {
-		panic(err)
-	}
-
-	for _, v := range recentContributionsQuery.User.ContributionsCollection.CommitContributionsByRepository {
+	for _, v := range contributedRepos() {
 		// ignore meta-repo
 		if string(v.Repository.NameWithOwner) == fmt.Sprintf("%s/%s", username, username) {
 			continue
@@ -103,17 +140,11 @@ func recentContributions(count int) []Contribution {
 			continue
 		}
 
-		c := Contribution{
+		contributions = append(contributions, Contribution{
 			Repo:       repoFromQL(v.Repository),
-			OccurredAt: v.Contributions.Edges[0].Node.OccurredAt.Time,
-		}
-
-		contributions = append(contributions, c)
+			OccurredAt: v.OccurredAt,
+		})
 	}
-
-	sort.Slice(contributions, func(i, j int) bool {
-		return contributions[i].OccurredAt.After(contributions[j].OccurredAt)
-	})
 
 	// fmt.Printf("Found %d contributions!\n", len(repos))
 	if len(contributions) > count {
@@ -217,44 +248,42 @@ func recentForks(count int) []Repo {
 func recentReleases(count int) []Repo {
 	// fmt.Printf("Finding recent releases...\n")
 
-	var after *githubv4.String
 	var repos []Repo
 
-	for {
-		variables := map[string]interface{}{
-			"username": githubv4.String(username),
-			"after":    after,
+	for _, c := range contributedRepos() {
+		if c.Repository.IsPrivate {
+			continue
 		}
-		err := gitHubClient.Query(context.Background(), &recentReleasesQuery, variables)
+
+		owner, name, ok := strings.Cut(string(c.Repository.NameWithOwner), "/")
+		if !ok {
+			continue
+		}
+		variables := map[string]interface{}{
+			"owner": githubv4.String(owner),
+			"name":  githubv4.String(name),
+		}
+		err := gitHubClient.Query(context.Background(), &repoReleasesQuery, variables)
 		if err != nil {
 			panic(err)
 		}
 
-		// fmt.Printf("%+v\n", query)
-		if len(recentReleasesQuery.User.RepositoriesContributedTo.Edges) == 0 {
+		r := repoFromQL(repoReleasesQuery.Repository.qlRepository)
+
+		for _, rel := range repoReleasesQuery.Repository.Releases.Nodes {
+			if rel.IsPrerelease || rel.IsDraft {
+				continue
+			}
+			if repoReleasesQuery.Repository.Releases.Nodes[0].TagName == "" ||
+				repoReleasesQuery.Repository.Releases.Nodes[0].PublishedAt.Time.IsZero() {
+				continue
+			}
+			r.LastRelease = releaseFromQL(repoReleasesQuery.Repository.Releases)
 			break
 		}
 
-		for _, v := range recentReleasesQuery.User.RepositoriesContributedTo.Edges {
-			r := repoFromQL(v.Node.qlRepository)
-
-			for _, rel := range v.Node.Releases.Nodes {
-				if rel.IsPrerelease || rel.IsDraft {
-					continue
-				}
-				if v.Node.Releases.Nodes[0].TagName == "" ||
-					v.Node.Releases.Nodes[0].PublishedAt.Time.IsZero() {
-					continue
-				}
-				r.LastRelease = releaseFromQL(v.Node.Releases)
-				break
-			}
-
-			if !r.LastRelease.PublishedAt.IsZero() {
-				repos = append(repos, r)
-			}
-
-			after = githubv4.NewString(v.Cursor)
+		if !r.LastRelease.PublishedAt.IsZero() {
+			repos = append(repos, r)
 		}
 	}
 
